@@ -1,0 +1,46 @@
+
+body {
+  padding-top:54px
+  background-color: #e3f2fd
+}
+.wrapper {
+   display: relative;
+}
+
+img {
+    width: 220px;
+    height:220px;
+    margin-top: 10px
+
+}
+
+
+.wrapper .glyphicon {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 40px;
+  color: black;
+}
+
+
+div.caption{
+  font-style: italic;
+}
+
+.customDiv{
+    margin:3px;
+    min-height:300px;
+    background-color:silver;
+    text-align:center;
+    font-size:large
+}
+#saveitem{
+  display: inline-block;
+  vertical-align: top;
+
+}
+.mid-width.wrapItems .multiselect-container>li>a {
+    white-space: normal;
+}
+

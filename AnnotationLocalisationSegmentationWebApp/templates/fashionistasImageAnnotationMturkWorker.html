@@ -1,0 +1,2595 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="/static/style/gallery_template.css" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+<!--**********************************TOP NAV BAR**********************************************-->
+<!-- Navigation for prev,next,allfolder, loged in user name and logout-->
+<nav class="navbar navbar-expand-lg  navbar-light bg-faded " style="background-color: #e3f2fd;" role="navigation">
+<div class="container-fluid"> <!-- Container for top navbar-->
+  <ul class = "nav  navbar-nav  nav-left ">
+{% set all_id_annotated_info_dict_list = all_id_annotated_info_dict_list %}
+{% set index = 0 %}
+{% set len =all_id_annotated_info_dict_list|length %}
+{# id #}
+{#image_url#}
+{% set prev = False %}
+{% set next = False %}
+{# prev #}
+{# next #}
+
+{% if id in all_id_annotated_info_dict_list %}
+{% set current_image_info = all_id_annotated_info_dict_list.get(id)%}
+{% set current_image_annotated_info = current_image_info["annotated"] %}
+{# current_image_annotated_info #}
+{% endif%}
+
+  <li style = "display:None;">  <a href="{{url_for('fashionistasImageAnnotation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,prev = True,option = option) }}">Previous Image </a></li>
+  <li  style = "display:None;">  <a href="{{url_for('fashionistasImageAnnotation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,next = True,option = option) }}">Next Image </a></li>
+  <li style = "display:None;">  <a href="{{url_for('singleUserFolder',insta_username = insta_username,annotator_username = annotator_username,option = option)}}">All Images of this fashionista </a></li>
+  <li >  <h4 class ="text-center" style="position: absolute;left: 250px;display: flex;justify-content: center; font-family:Courier; color:#429bf4; font-size: 20px;">
+            {{insta_username}}
+        </h4>
+      <p style = "display:None;" ><a href="{{url_for('crowdsourcingConfigs', annotator_username = annotator_username)}}"> check</a></p>
+  </li>
+  </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li style = "display:None;"><a href="{{ url_for('allUserFolder',annotator_username = annotator_username,option = option) }}">All Folders</a>
+      </li>
+
+      </ul>
+
+      <ul class = "nav navbar-nav nav-left" style="background-color: #429bf4">
+      <li >
+          <p class="text-center"><strong>In the data table, you can see the most relevant hashtags or words mentioned in the original post and comments of the image. Words are classified according to the style category.Percentage of words frequencies are shown in the pie chart.</strong> </p>
+        </li>
+
+      </ul>
+    </div><!-- END "Container for top navbar" -->
+    </nav>
+  <!-- END of "Navigation for prev,next,allfolder, loged in user name and logout"-->
+  <!--**********************************TOP NAV BAR**********************************************-->
+
+
+
+  <!--**********************************IMAGE; TABLE; PIE CHART**********************************************-->
+  <!-- div for image, words and piechart view -->
+    <div class = "container-fluid" style="background-color: #e3f2fd;"><!-- Container for image, words and piechart view -->
+      <div class = "row " style="background-color:#f5fcff; border-radius:15px;  height:400px;margin-top:10px">
+        <div class="col-md-4 " style="background-color:lavender;border: 1px solid blue;width:420px;height:400px"><!-- column1 for image-->
+                {% set binary_image_base64 = imagebinarydata %}
+                {% set image_type = 'data:image/jpg;base64,' %}
+                {% set final_image = image_type + binary_image_base64 %}
+
+            <img src={{final_image}} style="width:380px;height:380px">
+
+
+        </div><!-- End column1 for image-->
+
+
+        <div class="col-md-5"  style="background-color:lavender;border: 1px solid blue;height:400px"><!-- column2 for table-->
+          <div class="row"  >
+	 <div class="table-responsive" style="overflow-x:scroll;overflow-y:scroll; height:380px; width:480px">
+		  <table class="table table-striped " id = "dataTable">
+
+		            <tr>
+		              <th width="100" >Fashion Vocabulary</th>
+		              <th>Related Word</th>
+		              <th style = "display:None;" >Count</th>
+		            </tr>
+
+
+		          {% for k,v in text_data|dictsort(true): %}
+		              <tr>
+		                  {% if v is mapping %}
+		                      <td>{{k}}</td>
+		                        {% set value_data = ', '.join(v['data'])%}
+		                      <td>{{value_data}}</td>
+		                      <td style = "display:None;" >{{v['count']}}</td>
+		                  {% else %}
+		                      <td>{{k}}</td>
+		                      <td>{{", ".join(v)}}</td>
+		                      <td style = "display:None;" >{{v|length}}</td>
+
+		                {% endif %}
+		              </tr>
+		          {% endfor %}
+
+		    </table>
+	    </div>
+          </div>
+        </div><!-- END column2 for table-->
+
+          <div  style="margin-top:10px;"></div>
+        </div><!-- END column 3 for pie-->
+      </div><!-- END of row for 3 columns-->
+    </div>    <!-- END of "Container for image, words and piechart view" -->
+  <!-- END of "div for image, words and piechart view" -->
+  <!--**********************************IMAGE; TABLE; PIE CHART**********************************************-->
+
+</br>
+</br>
+  <!--**********************************QUESTION AND INSTRUCTION**********************************************-->
+
+<div class = "container-fluid"><!-- div  container for QUESTION AND INSTRUCTION  -->
+  <div class="row" >
+        <p> </p>
+               {%if liketkit: %}
+                     <p style = "display:None;">Click on link of the "LikeToKnow" to get more details about items:
+                      <a href="{{liketkit[0]}}" style = "display:None;"> Liketoknoit link</a>
+                    </p>
+
+                {% else %}
+                 <p style = "display:None;">No link of "LikeToKnow" exist</p>
+                {% endif %}
+
+
+       <div class = "row">
+         <div class="col-xs-4">
+           <label for="itemsel1">How many fashion items can you see in this image?</label>
+           </div>
+         <div class="col-xs-2">
+           <div class="form-group">
+             <select class="form-control" id="itemsel1">
+               <option>0</option>
+               <option>1</option>
+               <option>2</option>
+               <option>3</option>
+               <option>4</option>
+               <option>5</option>
+               <option>6</option>
+               <option>7</option>
+             </select>
+         </div>
+          </div>
+       </div>
+      <div class = "row">
+         <div class="col-xs-4">
+           <label for="itemsel1">How do you classify the 'Style' of this outfit?</label>
+        </div>
+         <div class="col-xs-2">
+           <div class="form-group">
+             <select class="form-control" multiple ="multiple" id="idfashionstyle">
+               <option>Classic / Conservative / Timeless/ Traditional / Crisp -Style</option>
+               <option>Feminine / Soft / Romantic/ Charming / Delicate -Style</option>
+               <option> Trendy / Creative / Unique/ Fashion-Forward -Style </option>
+               <option>Sporty / Casual / Easy/ Practical -Style </option>
+               <option> Dramatic / Eccentric / Bold / Distinctive / Theatrical -Style </option>
+               <option>Vibrant Style</option>
+               <option> Preppy Style</option>
+               <option>Elegant Style</option>
+               <option>Chic Style</option>
+               <option> Bohemian Style</option>
+               <option>Girly Style</option>
+               <option>Artsy Style</option>
+               <option>Business Style</option>
+               <option> Tomboy Style</option>
+               <option>Street Style</option>
+               <option>50’s Style</option>
+               <option>70’s Style</option>
+               <option>Sophisticated Style</option>
+               <option>Western Style</option>
+               <option>Vintage Style</option>
+
+             </select>
+         </div>
+       </div>
+       <div>
+         <a href="{{url_for('stylesCategoriesDetail', annotator_username = annotator_username,insta_username = insta_username)}}">Find Details about diffrent styles here</a></label>
+       </div>
+       </div>
+        </div>
+
+</div><!-- END div  container for QUESTION AND INSTRUCTION  -->
+<!--************************************QUESTION AND INSTRUCTION********************************************-->
+
+
+
+{% if annotated_json_data %}
+{#annotated_json_data#}
+
+<div class="container-fluid" style = "margin-top:10px;" id = "idSaveElementTableDiv">
+    <div class = "row" style="background-color:#f5fcff;border: 1px solid blue; margin-top:10px" id = "idSaveItemCount">
+      {% set data_len = 0 %}
+      {% set data_len = annotated_json_data|length %}
+
+         <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid blue; height:50px;" ><!--div for first column-->
+              <p> The image is annotated with <strong>{{data_len}} </strong> items. The details annotated  information is provided below: </p>
+         </div>
+    </div>
+    <div class="row" style="background-color:#f5fcff;border: 1px solid blue;"><!-- div  row for DROPDOWN nad IMPORTANT check SAVE BUTTON -->
+
+      <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid blue; " ><!--div for first column-->
+
+            <table class="table table-striped" id="idSavedItemShowTable">
+              <tr>
+                  <th>Item Annoated Count</th>
+                  <th>Item Category</th>
+                  <th>Item Sub Category</th>
+                  <th>Annotated Attributes/Values</th>
+                  <th>Delete Item</th>
+
+              </tr>
+                {% set itm = 0 %}
+                {% for item in annotated_json_data %}
+                <tr>
+                  {%set itm = itm + 1 %}
+                  <td>{{itm }}</td>
+                  {% set annotated_data_dict = item|dictsort(true)  %}
+
+                  <!--data sorted as tuple and iterate to tuple [('a', u'dresses'), ('b', u'cocktail'),
+                  ('c', {u'Lining': [], u'Brand': [], u'Material': [u'satin'], u'otherdetails': u'', u'Collection': [], u'trouserrise': [], u'Length': [], u'Pattern': [u'camouflage'], u'Collartype': [], u'Colour': [], u'Occasion': []  })]-->
+
+                    <td>{# annotated_data_dict[0] is the ItemCategory #}
+                      <strong>{{annotated_data_dict[0][1] }}</strong>
+
+                    </td>
+
+                    <td>
+                      {# annotated_data_dict[1] is the ItemSubCategory #}
+                      {% if annotated_data_dict[1] %}
+                        <strong>{{annotated_data_dict[1][1] }}</strong>
+                      {% endif %}
+                    </td>
+
+                    <td>
+                      {# annotated_data_dict[2] is the attributes #}
+
+                      {% if annotated_data_dict[2] %}
+
+                      <strong>
+                        {% set attributes_data = annotated_data_dict[2][1] %}
+                          {% for k,v in attributes_data.items(): %}
+                            {% if v is iterable %}
+                                {% set value_string = ', '.join(v)%}
+                                {{k}}{{' : '}}{{value_string}} <br/>
+                            {% else %}
+	                            {{k}}{{' : '}}{{v}} <br/>
+                            {% endif %}
+                          {% endfor  %}
+                      </strong>
+                      {% endif %}
+
+
+                    </td>
+                    <td>
+                      <div class ="btn-group" >
+                         <button id="iddeleteitembutton" class="btnDelete" Style="width: 100px;">Delete Item</button>
+                      </div>
+
+                    </td>
+
+                  </tr>
+              {% endfor %}
+
+      </table>
+
+      </div><!--div for first column-->
+      <br>
+    </div>
+</div>
+{% endif %}
+<!--************************************DIFFERENT ITEMS DROPDOWN********************************************-->
+<div class="container-fluid">
+  <div class="row" style="background-color:#f5fcff;border: 1px solid blue; height:300px;"><!-- div  row for DROPDOWN nad IMPORTANT check SAVE BUTTON -->
+   <p >Please fill this form for all the items that you can find for the main "Fashionista" in the image. Once you finish an item, click on the button "Save" to save your annotation. After saving all of your annotation select style and then click "Finalize Annotation"  </p>
+
+
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<Div for IMPORTANT CHECK AND CLEAR AND SAVE BUTTON >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+    <div class ="col-md-4" style="background-color:#f5fcff;border: 1px solid blue; height:300px;" ><!--div for first column-->
+      <form class="form-inline" style="margin-top:10px;" >
+          <div class="form-group">
+            <label >Item Category:</label>
+            <select class="form-control" id="iditemCategory" >
+              <option value="select">Select</option>
+              <option value="blouseAndTunics">Blouse & Tunics</option>
+              <option value="coats">Coats</option>
+              <option value="dresses">Dresses</option>
+              <option value="jeans">Jeans</option>
+              <option value="jackets">Jackets</option>
+              <option value="jumperAndCartigens">Jumper & Cardiagans</option>
+              <option value="skirts">Skirts</option>
+              <option value="tightsAndSocks">Tights & Socks</option>
+              <option value="topsTshirts">Tops & T-shirts</option>
+              <option value="trouserAndShorts">Trousers & Shorts</option>
+              <option value="shoes">Shoes</option>
+              <option value="bags">Bags</option>
+              <option value="accessories">All Accessories</option>
+            </select>
+          </div>
+
+      {% include "allPaternOccasionCollection.html" %}
+      <div id ="otherdetails" >
+           <p style="color:red; padding-top:10px;">Other details of the form apeared based on your choice..</p>
+      </div>
+
+
+
+      </form>
+    </div><!--div for first column-->
+    <div class ="col-md-4" style="background-color:#f5fcff;border: 1px solid blue; height:300px;" ><!--div for second column-->
+
+      <form class="form-inline" style="margin-top:10px;" ><!--form -inline second column-->
+                 <div class="form-group" id = "SubCategoryblouseAndTunics" style = "display:None;" ><!-- SUB-CATEGORY BLOUSE AND TUNICS -->
+                       <label style="margin-left:5px;">Item Sub-Category:</label>
+                       <select class="form-control" id="idsubcatblouseTunic" >
+                         <option value="select">Select</option>
+                         <option value="blouse">Blouse</option>
+                         <option value="shirt">Shirts</option>
+                         <option value="Tunics">Tunics</option>
+                     </select>
+                   </div><!-- ATTRIBUTES  SUB-CATEGORY BLOUSE AND TUNICS -->
+                   <div class="form-group" id = "SubCategoryCoat" style = "display:None;" ><!-- SUB-CATEGORY COAT -->
+                     <label style="margin-left:5px;">Item Sub-Category:</label>
+                     <select class="form-control" id="idsubcatcoat" >
+                       <option value="select">Select</option>
+                       <option value="downcoat">Down Coats</option>
+                       <option value="parkas">Parkas</option>
+                       <option value="shortcoat">Short Coats</option>
+                       <option value="trenchcoat"> Trench Coats</option>
+                       <option value="wintercoat"> Winter Coats</option>
+                       <option value="woolcoat"> Wool Coats</option>
+                   </select>
+                 </div><!-- ATTRIBUTES  SUB-CATEGORY COAT-->
+                 <div class="form-group" id = "SubCategoryDress" style = "display:None;" ><!-- SUB-CATEGORY DRESS -->
+                   <label style="margin-left:5px;">Item Sub-Category:</label>
+                   <select class="form-control" id="idsubcatdress" >
+                     <option value="select">Select</option>
+                     <option value="casual">Casual</option>
+                     <option value="cocktail">Cocktail</option>
+                     <option value="denim">Denim</option>
+                     <option value="jeresy"> Jeresy</option>
+                     <option value="knitted">Knitted</option>
+                     <option value="maxi"> Maxi</option>
+                     <option value="shirt">Shirt</option>
+                     <option value="work"> Work</option>
+                 </select>
+               </div><!-- ATTRIBUTES  SUB-CATEGORY Dress-->
+               <div class="form-group" id = "SubCategoryJacket" style = "display:None;" ><!-- SUB-CATEGORY JACKETS -->
+                 <label style="margin-left:5px;">Item Sub-Category:</label>
+                 <select class="form-control" id="idsubcatjacket" >
+                   <option value="select">Select</option>
+                   <option value="athleticjacket"> Athletic Jackets</option>
+                   <option value="leatherjcket">Leather Jackets</option>
+                   <option value="denimjacket">Denim Jackets</option>
+                   <option value="lightweightjacket"> Lightweight Jackets</option>
+                   <option value="blazers">Blazers</option>
+                   <option value="giletswaistcoats"> Gilets & WaistCoats</option>
+                   <option value="capes">Capes</option>
+                   <option value="downjacket"> Down Jackets</option>
+                   <option value="winterjackets">Winter Jackets</option>
+                   <option value="fleecejacket"> Fleece  Jackets</option>
+                   <option value="outdoorjacket">Outdoor Jackets</option>
+               </select>
+             </div><!-- ATTRIBUTES  SUB-CATEGORY JACKETS-->
+             <div class="form-group" id = "SubCategoryJeans" style = "display:None;" ><!-- SUB-CATEGORY JEANS -->
+               <label style="margin-left:5px;">Item Sub-Category:</label>
+               <select class="form-control" id="idsubcatjeans" >
+                 <option value="select">Select</option>
+                 <option value="flares"> Flares </option>
+                 <option value="skinnyfit">Skinny Fit</option>
+                 <option value="bootcut">Bootcut </option>
+                 <option value="denimshorts"> Denim Shorts</option>
+                 <option value="loosefit"> Loose Fit</option>
+                 <option value="slimfit"> Slim Fit</option>
+                 <option value="straightleg"> Straight Leg</option>
+             </select>
+           </div><!-- ATTRIBUTES  SUB-CATEGORY JEANS-->
+           <div class="form-group" id = "SubCategoryJumperCardigan" style = "display:None;" ><!-- SUB-CATEGORY JUMPER & CARTIGANS -->
+             <label style="margin-left:5px;">Item Sub-Category:</label>
+             <select class="form-control" id="idsubcatjumpercardigan" >
+               <option value="select">Select</option>
+               <option value="athketicjacket"> Athletic Jackets </option>
+               <option value="hoodies">Hoodies </option>
+               <option value="jumpers">Jumpers </option>
+               <option value="sweatshirts"> Sweat Shirts</option>
+               <option value="cardigans">Cardigans</option>
+               <option value="fleecejumpers">Fleece Jumpers</option>
+           </select>
+         </div><!-- ATTRIBUTES  SUB-CATEGORY JUMPER & CARTIGANS-->
+         <div class="form-group" id = "SubCategorySkirts" style = "display:None;" ><!-- SUB-CATEGORY SKIRTS -->
+           <label style="margin-left:5px;">Item Sub-Category:</label>
+           <select class="form-control" id="idsubcatskirts" >
+             <option value="select">Select</option>
+             <option value="maxi"> Maxi </option>
+             <option value="a-line">A-Line </option>
+             <option value="pencil">Pencil </option>
+             <option value="mini"> Mini </option>
+             <option value="denim">Denim</option>
+             <option value="pleated">Pleated</option>
+             <option value="leather">Leather</option>
+             <option value="bubblehem">Bubble Hem</option>
+         </select>
+       </div><!-- ATTRIBUTES  SUB-CATEGORY SKIRTS-->
+       <div class="form-group" id = "SubCategoryTopsTshirts" style = "display:None;" ><!-- SUB-CATEGORY TOPS_TSHIRTS -->
+         <label style="margin-left:5px;">Item Sub-Category:</label>
+         <select class="form-control" id="idsubcattopstshirts" >
+           <option value="select">Select</option>
+           <option value="longsleevetops"> Long Sleeve Tops </option>
+           <option value="poloshirts">Polo Shirts </option>
+           <option value="vesttops">Vest Tops </option>
+           <option value="tshirts"> T-Shirts </option>
+
+       </select>
+     </div><!-- ATTRIBUTES  SUB-CATEGORY  TOPS_TSHIRTS-->
+         <div class="form-group" id = "SubCategoryTrouserShorts" style = "display:None;" ><!-- SUB-CATEGORY TROUSERS AND SHORTS -->
+           <label style="margin-left:5px;">Item Sub-Category:</label>
+           <select class="form-control" id="idsubcattrousershorts" >
+             <option value="select">Select</option>
+             <option value="chinos"> Chinos </option>
+             <option value="joggersAndSweats">Joggers & Sweats </option>
+             <option value="leggings">Leggings </option>
+             <option value="playsuitAndJumpsuits"> Playsuits & Jumpsuits </option>
+             <option value="shorts">Shorts </option>
+             <option value="trousers">Trousers </option>
+
+         </select>
+       </div><!-- ATTRIBUTES  SUB-CATEGORY  TROUSERS AND SHORTS   -->
+
+       <div class="form-group" id = "SubCategoryTightSocks" style = "display:None;" ><!-- SUB-CATEGORY TIGHT & SOCKS -->
+         <label style="margin-left:5px;">Item Sub-Category:</label>
+         <select class="form-control" id="idsubcattightsocks" >
+           <option value="select">Select</option>
+           <option value="kneehighsocks"> Knee High Socks </option>
+           <option value="leggings">Leggings </option>
+           <option value="socks"> Socks </option>
+           <option value="tighhighsocks">Tigh High Socks </option>
+           <option value="tights">Tights </option>
+
+       </select>
+     </div><!-- ATTRIBUTES  SUB-CATEGORY  TIGHT & SOCKS   -->
+
+       <div class="form-group" id = "SubCategoryBags" style = "display:None;" ><!-- SUB-CATEGORY BAGS -->
+         <label style="margin-left:5px;">Item Sub-Category:</label>
+         <select class="form-control" id="idsubcatbags" >
+           <option value="select">Select</option>
+           <option value="clutchbags"> Cluth Bags </option>
+           <option value="handbags">Hand Bags  </option>
+           <option value="totebags">Tote Bags </option>
+           <option value="shoulderbags">Shoulder Bags </option>
+           <option value="rucksacks">Rucksacks </option>
+           <option value="sportAndTravelBags">Sport & Travel Bags </option>
+           <option value="laptopsbags">Laptop Bags </option>
+       </select>
+     </div><!-- ATTRIBUTES  SUB-CATEGORY  BAGS   -->
+
+     <div class="form-group" id = "SubCategoryShoes" style = "display:None;" ><!-- SUB-CATEGORY SHOES -->
+       <label style="margin-left:5px;">Item Sub-Category:</label>
+       <select class="form-control" id="idsubcatshoes" >
+         <option value="select">Select</option>
+         <option value="ankleboots"> Ankle Boots </option>
+         <option value="baletspumps">Ballet Pumps  </option>
+         <option value="boots">Boots </option>
+         <option value="flatLaceUps">Flats & Lace-ups </option>
+         <option value="flipflopsBeachShoes">Flip-Flops & Beach Shoes </option>
+         <option value="heels">Heels </option>
+         <option value="mulesClogs">Mules & Clogs</option>
+         <option value="outdoorshoes">Outdoor Shoes</option>
+         <option value="sandals">Sandals</option>
+         <option value="shoecare">Shoe Care </option>
+         <option value="slippers">Slippers</option>
+         <option value="sportshoes">Sports Shoes</option>
+         <option value="trainers">Trainers</option>
+     </select>
+   </div><!-- ATTRIBUTES  SUB-CATEGORY  SHOES   -->
+
+   <div class="form-group" id = "SubCategoryAllAccessories" style = "display:None;" ><!-- SUB-CATEGORY ALLACCESSORIES -->
+     <label style="margin-left:5px;">Item Sub-Category:</label>
+     <select class="form-control" id="idsubcataccessories" >
+       <option value="select">Select</option>
+       <option value="belts"> Belts </option>
+       <option value="Gloves">Gloves  </option>
+       <option value="hatsAndCaps">Hats & Caps </option>
+       <option value="jewelleryAndWatches">Jewellery & Watches </option>
+       <option value="purses">Purses </option>
+       <option value="scarvesAndShawls">Scarves and Shawls </option>
+       <option value="sunglasses">Sunglasses</option>
+
+   </select>
+ </div><!-- ATTRIBUTES  SUB-CATEGORY  ALLACCESSORIES   -->
+
+
+
+                   {% include "allMaterialCollarColor.html" %}
+           </form><!--form-inline second column end-->
+    </div><!--div for second column-->
+
+    <div class ="col-md-4" style="background-color:#f5fcff;border: 1px solid blue; height:300px;" ><!--div for third column-->
+      {% include "allBrandTextDetails.html" %}
+    </div><!--div for third column-->
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<Div for IMPORTANT CHECK AND CLEAR AND SAVE BUTTON >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+
+
+
+    <br><!-- break to make the next column in next line-->
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<Div for IMPORTANT CHECK AND CLEAR AND SAVE BUTTON >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+    <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid red; height:80px;" ><!--div for check and save column end -->
+      <div class="container">
+        <div class="row"><!--div for row check and save column  -->
+          <div class="col-xs-7 " style="padding-top:5px;">
+
+          </div>
+          <div class="col-md-4" style="padding-top:15px;">
+                <!--<form class="navbar-form navbar-right">-->
+                <div class ="btn-group" >
+                    <button id="saveitem" class="btn btn-default btn-md center-block" Style="width: 100px;"  >Save</button>
+
+
+                 </div>
+
+<button id ="finalizeannotationimageBtn" type="submit" class="btn btn-default  btn-block"  Style="width: 150px;">Finalize Annotation </button>
+
+
+
+
+              <!-- </form>-->
+          </div>
+        </div><!--div for row check and save column end -->
+      </div>
+    </div><!--div for check and save column end -->
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<Div for IMPORTANT CHECK AND CLEAR AND SAVE BUTTON >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+
+  </div><!-- div  row for DROPDOWN nad IMPORTANT check SAVE BUTTON -->
+
+</div>
+<!--************************************DIFFERENT ITEMS DROPDOWN********************************************-->
+
+
+<!--**********************************BOTTOM NAV BAR**********************************************-->
+  <div class = "container-fluid"><!-- div  container for lower navbar  -->
+       <div class="row" ><!-- div  row for lower navbar -->
+
+         <ul class = "nav  navbar-nav navbar-left   ">
+           <li>
+             <div class="checkbox"  style="margin-left:5px; display:None;">
+               <label><input id="notfashionimage" type="checkbox" value="">Mark the item as "Doesn't contain Fashion Items"</label>
+                <a href="/static/appdata/CriteriaofAnnotatingimages.pdf" type="application/pdf">(Detail criteria of non fashion item)</a>
+
+             </div>
+         </li>
+         </ul>
+        <ul class = "nav  navbar-nav navbar-right   ">
+
+
+       		</ul>
+     </div><!-- div  row for lower navbar  end -->
+     </div><!-- div  container for lower navbar  end -->
+<!--**********************************BOTTOM NAV BAR**********************************************-->
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+var annotation_dict_id_to_allitem = {};
+var annotation_dict_all = []; //add temporary itemcategory
+var annotation_dict_all_to_json = {};
+var item_count = 0;
+var itemVisibleInImage = 0;
+var list_holds_save_item_to_finalize = [];
+var sorted_annotated_saved_json_data =[];
+var styles =[] ;
+
+
+$(function () {
+        $("#iditemCategory").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              hideAllAttributes();
+
+          }else if ($(this).val() == "blouseAndTunics") {
+            $("#SubCategoryblouseAndTunics").show();
+            $("#idsubcatblouseTunic").val('select');
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+
+          }
+          else if ($(this).val() == "coats") {
+            $("#SubCategoryCoat").show();
+            $("#idsubcatcoat").val('select');
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+
+          }
+          else if ($(this).val() == "dresses") {
+            $("#SubCategoryDress").show();
+             $("#idsubcatdress").val('select');
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+          }
+          else if ($(this).val() == "jackets") {
+            $("#SubCategoryJacket").show();
+            $("#idsubcatjacket").val('select');
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+
+          }
+          else if ($(this).val() == "jeans") {
+            $("#SubCategoryJeans").show();
+            $("#idsubcatjeans").val('select');
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+          }
+          else if ($(this).val() == "jumperAndCartigens") {
+
+            $("#SubCategoryJumperCardigan").show();
+            $("#idsubcatjumpercardigan").val('select');
+
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+          }
+          else if ($(this).val() == "skirts") {
+
+            $("#SubCategorySkirts").show();
+            $("#idsubcatskirts").val('select');
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+
+          }
+          else if ($(this).val() == "topsTshirts") {
+
+            $("#SubCategoryTopsTshirts").show();
+            $("#idsubcattopstshirts").val('select');
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+          }
+
+          else if ($(this).val() == "trouserAndShorts") {
+
+            $("#SubCategoryTrouserShorts").show();
+            $("#idsubcattrousershorts").val('select');
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryAllAccessories").hide();
+            hideAllAttributes();
+
+          }else if ($(this).val() == "tightsAndSocks") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").hide();
+
+            $("#SubCategoryTightSocks").show();
+            $("#idsubcattightsocks").val('select');
+            hideAllAttributes();
+          }
+          else if ($(this).val() == "bags") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryAllAccessories").hide();
+            $("#SubCategoryBags").show();
+            $("#idsubcatbags").val('select');
+
+            hideAllAttributes();
+          }
+          else if ($(this).val() == "shoes") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryAllAccessories").hide();
+
+            $("#SubCategoryShoes").show();
+            $("#idsubcatshoes").val('select');
+
+            hideAllAttributes();
+          }
+          else if ($(this).val() == "accessories") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").hide();
+            $("#SubCategorySkirts").hide();
+            $("#SubCategoryTopsTshirts").hide();
+            $("#SubCategoryTrouserShorts").hide();
+            $("#SubCategoryBags").hide();
+            $("#SubCategoryShoes").hide();
+            $("#SubCategoryTightSocks").hide();
+            $("#SubCategoryAllAccessories").show();
+            $("#idsubcataccessories").val('select');
+
+            hideAllAttributes();
+
+          }
+          else{
+            $("#otherdetails").hide();
+          }
+
+        });
+        /* for the BLOUSE and TUNIC item sub-category */
+        $("#idsubcatblouseTunic").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+              hideAllAttributes();
+
+          }else{
+            //refreshAllDropdownOfBootstrapMultiselect();
+
+            refreshAllDropdownOfBootstrapMultiselect();
+
+            $("#otherdetails").hide();
+            $("#AllBrand").show();
+            $("#OtherBrandTextBox").show();
+            $("#AllPattern").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            //$("#idlabelMaterial").append('<span class="red-star" style="color:red;">*</span>');
+
+            $("#AllCollection").show();
+            $("#AllOccasion").show();
+            $("#AllColour").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+
+        /* for the COAT item sub-category */
+        $("#idsubcatcoat").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+            $("#AllLining").show();
+          }
+
+        });
+        /* for the DRESS item sub-category */
+        $("#idsubcatdress").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              hideAllAttributes();
+
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllCollarType").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+            $("#AllLength").show();
+          }
+
+        });
+        /* for the JACKET item sub-category */
+        $("#idsubcatjacket").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllBrand").show();
+            $("#AllPattern").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            $("#AllCollection").show();
+            $("#AllOccasion").show();
+            $("#OtherDetailsTextBox").show();
+            $("#AllColour").show();
+            $("#AllLining").show();
+          }
+
+        });
+        /* for the JEANS item sub-category */
+        $("#idsubcatjeans").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#AllLength").show();
+            $("#Alltrouserrise").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+
+        /* for the JUMPERS & CARDIGANS item sub-category */
+        $("#idsubcatjumpercardigan").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+
+        /* for the SKIRTS item sub-category */
+        $("#idsubcatskirts").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllLength").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+        /* for the TOPS & TSHIRTS item sub-category */
+        $("#idsubcattopstshirts").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+        /* for the TROUSERS & SHORTS item sub-category */
+        $("#idsubcattrousershorts").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllLength").show();
+            $("#Alltrouserrise").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+         /* for the TIGHTS & SOCKS item sub-category */
+          $("#idsubcattightsocks").change(function () {
+            /* for the select option in */
+            if ($(this).val() == "select") {
+                $("#otherdetails").show();
+                $("#AllPattern").hide();
+                hideAllAttributes();
+
+            }else{
+              refreshAllDropdownOfBootstrapMultiselect();
+              $("#otherdetails").hide();
+              $("#AllPattern").show();
+              $("#AllOccasion").show();
+              $("#AllCollection").show();
+              $("#AllMaterial").show();
+              $("#AllColour").show();
+              $("#AllBrand").show();
+              $("#OtherDetailsTextBox").show();
+
+            }
+
+          });
+        /* for the BAGS item sub-category */
+        $("#idsubcatbags").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+               hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+
+        /* for the SHOES item sub-category */
+        $("#idsubcatshoes").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllPattern").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#AllHeel").show();
+            $("#Allfastener").show();
+            $("#Alltoe").show();
+            $("#AllheelHight").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+
+        /* for the OTHER ACCESSORIES item sub-category */
+        $("#idsubcataccessories").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+              hideAllAttributes();
+
+          }else{
+            refreshAllDropdownOfBootstrapMultiselect();
+            $("#otherdetails").hide();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+    });
+
+
+    $(document).ready(function() {
+         $('#idbrand').multiselect();
+       });
+    $(document).ready(function() {
+        $('#idpattern').multiselect();
+      });
+
+    /*$(document).ready(function() {
+       $('#idcollartype').multiselect();
+     });*/
+
+    $(document).ready(function() {
+      $('#idmaterial').multiselect();
+    });
+    $(document).ready(function() {
+      $('#idoccasion').multiselect();
+      });
+
+    /*$(document).ready(function() {
+        $('#idcollection').multiselect();
+      });*/
+    $(document).ready(function() {
+      $('#idcolour').multiselect();
+            });
+  $(document).ready(function() {
+      $('#idlining').multiselect();
+  });
+  $(document).ready(function() {
+      $('#idlength').multiselect();
+  });
+
+  $(document).ready(function() {
+    $('#idtrouserrise').multiselect();
+  });
+
+  $(document).ready(function() {
+    $('#idheeltype').multiselect();
+    });
+    $(document).ready(function() {
+      $('#idtoe').multiselect();
+      $('#idfastener').multiselect();
+      $('#idheelhight').multiselect();
+
+      });
+      $(document).ready(function(){
+        $('#idfashionstyle').multiselect();
+      });
+
+
+function refreshAllDropdownOfBootstrapMultiselect(){
+  /*  refreshing all the bootstrap-multiselect dropdowns Plugin site: http://bootsnipp.com */
+  // 1.Pattern
+  $('#idpattern option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idpattern').multiselect('refresh');
+  // 2.Occassion
+  $('#idoccasion option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idoccasion').multiselect('refresh');
+  // 3. Heel Type
+  $('#idheeltype option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idheeltype').multiselect('refresh');
+  // 4. Material type
+  $('#idmaterial option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idmaterial').multiselect('refresh');
+
+  // 5.Colour
+  $('#idcolour option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idcolour').multiselect('refresh');
+  // 6. Fastener
+  $('#idfastener option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idfastener').multiselect('refresh');
+  // 7. Heel Height
+  $('#idheelhight option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idheelhight').multiselect('refresh');
+  // 8. Heel Type
+  $('#idheeltype option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idheeltype').multiselect('refresh');
+  // 9.Brand
+  $('#idbrand option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idbrand').multiselect('refresh');
+  // 10. All length
+  $('#idlength option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idlength').multiselect('refresh');
+  // 11. Lining
+  $('#idlining option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idlining').multiselect('refresh');
+  // 12. Trouser Trouser-Rise
+  $('#idtrouserrise option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idtrouserrise').multiselect('refresh');
+  // 13. Toe
+  $('#idtoe option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idtoe').multiselect('refresh');
+
+  // 14.Collartype refresh single select drop down ids_list
+  //$('#idcollartype option:selected').each(function() {$(this).prop('selected', false);});
+  $('#idcollartype').val('select');
+
+  // 15.Collection refresh single select drop down ids_list
+    $('#idcollection').val('select');
+  //16.Text Box Clear
+  $("#idotherdetailtext").val('');
+  //17.Brand text box refreshing
+  $("#idotherbrandtextbox").val('');
+
+}
+
+function defaultSelectForItemSubCategory(){
+  // refreshing all 13 subCategory
+    $("#idsubcatblouseTunic").val('select');
+    $("#idsubcatdress").val('select');
+    $("#idsubcatjacket").val('select');
+    $("#idsubcatcoat").val('select');
+    $("#idsubcatjeans").val('select');
+    $("#idsubcatjumpercardigan").val('select');
+    $("#idsubcatskirts").val('select');
+    $("#idsubcattopstshirts").val('select');
+    $("#idsubcattrousershorts").val('select');
+    $("#idsubcattightsocks").val('select');
+    $("#idsubcatbags").val('select');
+    $("#idsubcatshoes").val('select');
+    $("#idsubcataccessories").val('select');
+    //$("#otherdetails").show();
+
+}
+
+
+
+function hideSubCategoryDropdowns(){
+  $("#AllBrand").hide();
+  $("#AllLining").hide();
+  $("#AllLength").hide();
+  $("#AllPattern").hide();
+  $("#AllCollarType").hide();
+  $("#Alltrouserrise").hide();
+  $("#AllMaterial").hide();
+  $("#AllCollection").hide();
+  $("#AllOccasion").hide();
+  $("#OtherDetailsTextBox").hide();
+  $("#AllColour").hide();
+  $("#AllHeel").hide();
+  $("#Alltoe").hide();
+  $("#Allfastener").hide();
+  $("#AllheelHight").hide();
+  $("#SubCategoryDress").hide();
+  $("#SubCategoryblouseAndTunics").hide();
+  $("#SubCategoryCoat").hide();
+  $("#SubCategoryJacket").hide();
+  $("#SubCategoryJeans").hide();
+  $("#SubCategoryJumperCardigan").hide();
+  $("#SubCategorySkirts").hide();
+  $("#SubCategoryTopsTshirts").hide();
+  $("#SubCategoryTrouserShorts").hide();
+  $("#SubCategoryBags").hide();
+  $("#SubCategoryTightSocks").hide();
+  $("#SubCategoryShoes").hide();
+  $("#SubCategoryAllAccessories").hide();
+
+
+}
+function hideAllAttributes(){
+  $("#AllBrand").hide();
+  $("#AllLining").hide();
+  $("#AllLength").hide();
+  $("#AllPattern").hide();
+  $("#AllCollarType").hide();
+  $("#Alltrouserrise").hide();
+  $("#AllMaterial").hide();
+  $("#AllCollection").hide();
+  $("#AllOccasion").hide();
+  $("#OtherDetailsTextBox").hide();
+  $("#AllColour").hide();
+  $("#AllHeel").hide();
+  $("#Alltoe").hide();
+  $("#Allfastener").hide();
+  $("#AllheelHight").hide();
+
+}
+
+
+
+$(document).ready(function() {
+  $('#clearandaddnewitem').on('click', function() {
+   $("#otherdetails").show();
+    $("#iditemCategory").val("select");
+    $("#AllBrand").hide();
+    $("#AllLining").hide();
+    $("#AllLength").hide();
+    $("#AllPattern").hide();
+    $("#AllCollarType").hide();
+    $("#Alltrouserrise").hide();
+
+    $("#AllMaterial").hide();
+    $("#AllCollection").hide();
+    $("#AllOccasion").hide();
+    $("#OtherDetailsTextBox").hide();
+    $("#AllColour").hide();
+    $("#SubCategoryDress").hide();
+    $("#SubCategoryblouseAndTunics").hide();
+    $("#SubCategoryCoat").hide();
+    $("#SubCategoryJacket").hide();
+    $("#SubCategoryJeans").hide();
+    $("#SubCategoryJumperCardigan").hide();
+    $("#SubCategorySkirts").hide();
+    $("#SubCategoryTopsTshirts").hide();
+    $("#SubCategoryTrouserShorts").hide();
+    $("#SubCategoryBags").hide();
+    $("#SubCategoryTightSocks").hide();
+    $("#SubCategoryShoes").hide();
+    $("#SubCategoryAllAccessories").hide();
+
+    $('#AllHeel').hide();
+    $('#Alltoe').hide();
+    $('#Allfastener').hide();
+    $('#AllheelHight').hide();
+
+    $("#iditemCategory").val('select');
+    defaultSelectForItemSubCategory();
+    refreshAllDropdownOfBootstrapMultiselect();
+
+
+    //read jinja variable using ""
+    //alert("{{url_for('singleUserFolder',insta_username = insta_username,annotator_username = annotator_username)}}");
+
+      });
+
+  });
+  $("#itemsel1").change(function () {
+    /* for the select option in */
+    itemVisibleInImage = $("#itemsel1 :selected").text();
+    //alert(chk)
+
+  });
+  /*BEGIN-Save item button*/
+    var select = false;
+    $(document).ready(function() {
+      $('#saveitem').on('click', function() {
+
+        // TODO:Need to check mandatory attributes.ItemCategory and ItemSUbCategory is mandatory
+        var annotation_dict = {};
+        var annotation_category_attribute_dict = {};
+        select = false;
+        var itemCategory = $("#iditemCategory :selected").val();
+        if (itemCategory=="blouseAndTunics"){
+          var itemSubCategory = $("#SubCategoryblouseAndTunics :selected").val();
+          //if(itemSubCategory!="select"){select = true;}
+          if(itemSubCategory!="select"){
+            /**********DATA FOR MANDATORY ATTRIBUTES********/
+              var brand =[] ;
+              $('#idbrand :selected').each(function(i, sel){
+                  brand.push($(sel).val());
+                });
+                var brandTextbox = $('#idotherbrandtextbox').val();
+                brand.push(brandTextbox);
+
+              var pattern =[] ;
+              $('#idpattern :selected').each(function(i, sel){
+                  pattern.push($(sel).val());
+              });
+              var material =[] ;
+              $('#idmaterial :selected').each(function(i, sel){
+                  material.push($(sel).val());
+              });
+              var occasion =[] ;
+              $('#idoccasion :selected').each(function(i, sel){
+                  occasion.push($(sel).val());
+              });
+              var collartype =[] ;
+              $('#idcollartype :selected').each(function(i, sel){
+                var selectedCollarType = $(sel).val();
+                if(selectedCollarType!='select'){
+                  collartype.push(selectedCollarType);
+                }
+              });
+                var collection =[] ;
+                $('#idcollection :selected').each(function(i, sel){
+                  var selectedCollection = $(sel).val();
+                  if(selectedCollection!='select'){
+                    collection.push(selectedCollection);
+                  }
+                });
+              var colour =[] ;
+              $('#idcolour :selected').each(function(i, sel){
+                  colour.push($(sel).val());
+              });
+
+            /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+            //select to true if all mandatory item selected out of 8 attributes
+                if( material.length!=0 && pattern.length!=0 && collartype.length!==0 && collection.length !=0 && occasion.length!=0 && colour.length!=0)
+                {
+                  select = true;
+                  var other_text = $('#idotherdetailtext').val();
+                  annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Collartype':collartype,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                  functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                  //alert(" All attribute is selected for blouse");
+                }
+                else{
+                data = 'WARNING:Select pattern,material,collartype,collection occassion and colour for the Blouse and tunics.Brand is optional but preferably filled';
+                alert(data);
+               }
+          }
+
+        }// end of blouse tunic category
+        else if(itemCategory=="dresses"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryDress :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          //if(itemSubCategory!="select"){select = true;}
+          if(itemSubCategory!="select"){
+            /**********DATA FOR MANDATORY ATTRIBUTES********/
+              var brand =[] ;
+              $('#idbrand :selected').each(function(i, sel){
+                  brand.push($(sel).val());
+                });
+              var brandTextbox = $('#idotherbrandtextbox').val();
+              brand.push(brandTextbox);
+              //alert(brand);
+              var pattern =[] ;
+              $('#idpattern :selected').each(function(i, sel){
+                  pattern.push($(sel).val());
+              });
+              var material =[] ;
+              $('#idmaterial :selected').each(function(i, sel){
+                  material.push($(sel).val());
+              });
+              var occasion =[] ;
+              $('#idoccasion :selected').each(function(i, sel){
+                  occasion.push($(sel).val());
+              });
+              var collartype =[] ;
+              $('#idcollartype :selected').each(function(i, sel){
+                var selectedCollarType = $(sel).val();
+                if(selectedCollarType!='select'){
+                  collartype.push(selectedCollarType);
+                }
+              });
+                var collection =[] ;
+                $('#idcollection :selected').each(function(i, sel){
+                  var selectedCollection = $(sel).val();
+                  if(selectedCollection!='select'){
+                    collection.push(selectedCollection);
+                  }
+                });
+              var colour =[] ;
+              $('#idcolour :selected').each(function(i, sel){
+                  colour.push($(sel).val());
+              });
+              var lengthDress =[] ;
+              $('#idlength :selected').each(function(i, sel){
+                  lengthDress.push($(sel).text());
+              });
+
+            /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+            //select to true if all mandatory item selected out of 8 attributes
+
+                if( material.length!=0 && pattern.length!=0 && collartype.length!==0 && collection.length !=0 && occasion.length!=0 && colour.length!=0 && lengthDress.length!=0)
+                { select = true;
+                  var other_text = $('#idotherdetailtext').val();
+
+                  annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Collartype':collartype,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'Length':lengthDress,'otherdetails':other_text};
+                  functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                  alert(" All attribute is saved for dress");
+                 }
+                else{
+                data = 'WARNING: Select pattern,material,collartype,collection, occassion,length and colour for the Dress.Brand is optional but preferebly filled.';
+                alert(data);
+               }
+            }
+
+        }//end of dress Category
+
+        else if(itemCategory=="jackets"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryJacket :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          //if(itemSubCategory!="select"){select = true;}
+          if(itemSubCategory!="select"){
+            /**********DATA FOR MANDATORY ATTRIBUTES********/
+              var brand =[] ;
+              $('#idbrand :selected').each(function(i, sel){
+                  brand.push($(sel).val());
+                });
+                var brandTextbox = $('#idotherbrandtextbox').val();
+                brand.push(brandTextbox);
+              var pattern =[] ;
+              $('#idpattern :selected').each(function(i, sel){
+                  pattern.push($(sel).val());
+              });
+              var material =[] ;
+              $('#idmaterial :selected').each(function(i, sel){
+                  material.push($(sel).val());
+              });
+              var occasion =[] ;
+              $('#idoccasion :selected').each(function(i, sel){
+                  occasion.push($(sel).val());
+              });
+              var collartype =[] ;
+              $('#idcollartype :selected').each(function(i, sel){
+                var selectedCollarType = $(sel).val();
+                if(selectedCollarType!='select'){
+                  collartype.push(selectedCollarType);
+                }
+              });
+                var collection =[] ;
+                $('#idcollection :selected').each(function(i, sel){
+                  var selectedCollection = $(sel).val();
+                  if(selectedCollection!='select'){
+                    collection.push(selectedCollection);
+                  }
+                });
+              var colour =[] ;
+              $('#idcolour :selected').each(function(i, sel){
+                  colour.push($(sel).val());
+              });
+              var length =[] ;
+              $('#idlength :selected').each(function(i, sel){
+                  length.push($(sel).text());
+              });
+
+            /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+            //select to true if all mandatory item selected out of 8 attributes
+                if( material.length!=0 && pattern.length!=0 && collartype.length!==0 && collection.length !=0 && occasion.length!=0 && colour.length!=0 )
+                { select = true;
+                  var other_text = $('#idotherdetailtext').val();
+
+                  annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Collartype':collartype,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                  functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                  }
+                else{
+
+                data = 'WARNING: Select pattern,material,collartype,collection, occassion and colour for the Jacket.Brand is optional but preferably filled.Lining is optional attribute.';
+                alert(data);
+               }
+            }
+        }// end of jacket category
+        else if(itemCategory=="jeans"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryJeans :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          //if(itemSubCategory!="select"){select = true;}
+          if(itemSubCategory!="select"){
+            /**********DATA FOR MANDATORY ATTRIBUTES********/
+              var brand =[] ;
+              $('#idbrand :selected').each(function(i, sel){
+                  brand.push($(sel).val());
+                });
+                var brandTextbox = $('#idotherbrandtextbox').val();
+                brand.push(brandTextbox);
+              var pattern =[] ;
+              $('#idpattern :selected').each(function(i, sel){
+                  pattern.push($(sel).val());
+              });
+              var material =[] ;
+              $('#idmaterial :selected').each(function(i, sel){
+                  material.push($(sel).val());
+              });
+              var occasion =[] ;
+              $('#idoccasion :selected').each(function(i, sel){
+                  occasion.push($(sel).val());
+              });
+              var collartype =[] ;
+              $('#idcollartype :selected').each(function(i, sel){
+                var selectedCollarType = $(sel).val();
+                if(selectedCollarType!='select'){
+                  collartype.push(selectedCollarType);
+                }
+              });
+                var collection =[] ;
+                $('#idcollection :selected').each(function(i, sel){
+                  var selectedCollection = $(sel).val();
+                  if(selectedCollection!='select'){
+                    collection.push(selectedCollection);
+                  }
+                });
+              var colour =[] ;
+              $('#idcolour :selected').each(function(i, sel){
+                  colour.push($(sel).val());
+              });
+              var length =[] ;
+              $('#idlength :selected').each(function(i, sel){
+                  length.push($(sel).text());
+              });
+              var trouserrise =[] ;
+              $('#idtrouserrise :selected').each(function(i, sel){
+                  trouserrise.push($(sel).val());
+              });
+
+            /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+            //select to true if all mandatory item selected out of 8 attributes
+                if( material.length!=0 && pattern.length!=0 &&  collection.length !=0 && occasion.length!=0 && colour.length!=0  )
+                { select = true;
+                  var other_text = $('#idotherdetailtext').val();
+                  annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'Length':length,'Trouserrise':trouserrise,'otherdetails':other_text};
+                  functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                 }
+                else{
+                data = 'WARNING: Select pattern,material,collection, occassion and colour for the Jeans.Brand and Length is optional but preferably filled.Trouser-rise is optional.';
+                alert(data);
+               }
+            }
+          }//end of jeans category
+
+          else if(itemCategory=="jumperAndCartigens"){
+         //  select = true;
+           var itemSubCategory = $("#SubCategoryJumperCardigan :selected").val();
+           // replace this if(itemSubCategory){select = true;} for select =true;
+           //if(itemSubCategory!="select"){select = true;}
+           if(itemSubCategory!="select"){
+             /**********DATA FOR MANDATORY ATTRIBUTES********/
+               var brand =[] ;
+               $('#idbrand :selected').each(function(i, sel){
+                   brand.push($(sel).val());
+                 });
+                 var brandTextbox = $('#idotherbrandtextbox').val();
+                 brand.push(brandTextbox);
+
+               var pattern =[] ;
+               $('#idpattern :selected').each(function(i, sel){
+                   pattern.push($(sel).val());
+               });
+               var material =[] ;
+               $('#idmaterial :selected').each(function(i, sel){
+                   material.push($(sel).val());
+               });
+               var occasion =[] ;
+               $('#idoccasion :selected').each(function(i, sel){
+                   occasion.push($(sel).val());
+               });
+               var collartype =[] ;
+               $('#idcollartype :selected').each(function(i, sel){
+                 var selectedCollarType = $(sel).val();
+                 if(selectedCollarType!='select'){
+                   collartype.push(selectedCollarType);
+                 }
+               });
+                 var collection =[] ;
+                 $('#idcollection :selected').each(function(i, sel){
+                   var selectedCollection = $(sel).val();
+                   if(selectedCollection!='select'){
+                     collection.push(selectedCollection);
+                   }
+                 });
+               var colour =[] ;
+               $('#idcolour :selected').each(function(i, sel){
+                   colour.push($(sel).val());
+               });
+
+             /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+             //select to true if all mandatory item selected out of 8 attributes
+                 if( material.length!=0 && pattern.length!=0 &&  collection.length !=0 && occasion.length!=0 && colour.length!=0)
+                 { select = true;
+                   var other_text = $('#idotherdetailtext').val();
+                   annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Collartype':collartype,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                   functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                  }
+                 else{
+
+                 data = 'WARNING: Select: pattern, material, collection occassion and colour for theJumper and Cardigan.Brand and Collartype is optional but preferbly filled.';
+                 alert(data);
+                }
+           }
+
+         }//end of jumoerand cardigans
+         else if(itemCategory=="coats"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryCoat :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          //if(itemSubCategory!="select"){select = true;}
+          /**********DATA FOR MANDATORY ATTRIBUTES********/
+          if(itemSubCategory!="select"){
+              var brand =[] ;
+              $('#idbrand :selected').each(function(i, sel){
+                  brand.push($(sel).val());
+                });
+                var brandTextbox = $('#idotherbrandtextbox').val();
+                brand.push(brandTextbox);
+
+              var pattern =[] ;
+              $('#idpattern :selected').each(function(i, sel){
+                  pattern.push($(sel).val());
+              });
+              var material =[] ;
+              $('#idmaterial :selected').each(function(i, sel){
+                  material.push($(sel).val());
+              });
+              var occasion =[] ;
+              $('#idoccasion :selected').each(function(i, sel){
+                  occasion.push($(sel).val());
+              });
+              var collartype =[] ;
+              $('#idcollartype :selected').each(function(i, sel){
+                var selectedCollarType = $(sel).val();
+                if(selectedCollarType!='select'){
+                  collartype.push(selectedCollarType);
+                }
+              });
+                var collection =[] ;
+                $('#idcollection :selected').each(function(i, sel){
+                  var selectedCollection = $(sel).val();
+                  if(selectedCollection!='select'){
+                    collection.push(selectedCollection);
+                  }
+                });
+              var colour =[] ;
+              $('#idcolour :selected').each(function(i, sel){
+                  colour.push($(sel).val());
+              });
+
+            /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+            //select to true if all mandatory item selected out of 8 attributes
+                if( material.length!=0 && pattern.length!=0 && collection.length !=0 && occasion.length!=0 && colour.length!=0)
+                { select = true;
+                  var other_text = $('#idotherdetailtext').val();
+                  annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                  functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                  }
+                else{
+                data = 'WARNING: Select pattern,material,collection occassion and colour for the Coat.Brand is optional but preferable filled. Lining is optional.';
+                alert(data);
+               }
+             }
+          }//end of coat
+
+          else if(itemCategory=="skirts"){
+           //select = true;
+           var itemSubCategory = $("#SubCategorySkirts :selected").val();
+           // replace this if(itemSubCategory){select = true;} for select =true;
+           //if(itemSubCategory!="select"){select = true;}
+         if(itemSubCategory!="select"){
+           /**********DATA FOR MANDATORY ATTRIBUTES********/
+             var brand =[] ;
+             $('#idbrand :selected').each(function(i, sel){
+                 brand.push($(sel).val());
+               });
+               var brandTextbox = $('#idotherbrandtextbox').val();
+               brand.push(brandTextbox);
+             var pattern =[] ;
+             $('#idpattern :selected').each(function(i, sel){
+                 pattern.push($(sel).val());
+             });
+             var material =[] ;
+             $('#idmaterial :selected').each(function(i, sel){
+                 material.push($(sel).val());
+             });
+             var occasion =[] ;
+             $('#idoccasion :selected').each(function(i, sel){
+                 occasion.push($(sel).val());
+             });
+
+               var collection =[] ;
+               $('#idcollection :selected').each(function(i, sel){
+                 var selectedCollection = $(sel).val();
+                 if(selectedCollection!='select'){
+                   collection.push(selectedCollection);
+                 }
+               });
+             var colour =[] ;
+             $('#idcolour :selected').each(function(i, sel){
+                 colour.push($(sel).val());
+             });
+             var length =[] ;
+             $('#idlength :selected').each(function(i, sel){
+                 length.push($(sel).text());
+             });
+             /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+             //select to true if all mandatory item selected out of 8 attributes
+                 if( material.length!=0 && pattern.length!=0 &&  collection.length !=0 && occasion.length!=0 && colour.length!=0 && length.length!=0)
+                 { select = true;
+                   var other_text = $('#idotherdetailtext').val();
+                   annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'Length':length,'otherdetails':other_text};
+                   functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                   }
+                 else{
+                 data = 'WARNING:Select pattern,material,collection, occassion,length and colour for the Skirt.Brand is optional but preferably filled.';
+                 alert(data);
+                }
+           }
+         }// end of skirts
+
+
+         else if(itemCategory=="topsTshirts"){
+           //select = true;
+           var itemSubCategory = $("#SubCategoryTopsTshirts :selected").val();
+           // replace this if(itemSubCategory){select = true;} for select =true;
+           //if(itemSubCategory!="select"){select = true;}
+           /**********DATA FOR MANDATORY ATTRIBUTES********/
+           if(itemSubCategory!="select"){
+             var brand =[] ;
+             $('#idbrand :selected').each(function(i, sel){
+                 brand.push($(sel).val());
+               });
+               var brandTextbox = $('#idotherbrandtextbox').val();
+               brand.push(brandTextbox);
+             var pattern =[] ;
+             $('#idpattern :selected').each(function(i, sel){
+                 pattern.push($(sel).val());
+             });
+             var material =[] ;
+             $('#idmaterial :selected').each(function(i, sel){
+                 material.push($(sel).val());
+             });
+             var occasion =[] ;
+             $('#idoccasion :selected').each(function(i, sel){
+                 occasion.push($(sel).val());
+             });
+             var collartype =[] ;
+             $('#idcollartype :selected').each(function(i, sel){
+               var selectedCollarType = $(sel).val();
+               if(selectedCollarType!='select'){
+                 collartype.push(selectedCollarType);
+               }
+             });
+               var collection =[] ;
+               $('#idcollection :selected').each(function(i, sel){
+                 var selectedCollection = $(sel).val();
+                 if(selectedCollection!='select'){
+                   collection.push(selectedCollection);
+                 }
+               });
+             var colour =[] ;
+             $('#idcolour :selected').each(function(i, sel){
+                 colour.push($(sel).val());
+             });
+
+           /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+           //select to true if all mandatory item selected out of 8 attributes
+               if(material.length!=0 && pattern.length!=0 && collartype.length!==0 && collection.length !=0 && occasion.length!=0 && colour.length!=0)
+               { select = true;
+                 var other_text = $('#idotherdetailtext').val();
+                 annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Collartype':collartype,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                 functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                }
+               else{
+               data = 'WARNING: Select pattern,material,collartype,collection occassion and colour for the Tops and Tshirts.Brand is optional but preferably filled.';
+               alert(data);
+              }
+            }
+         }// end of tops and tshirts
+
+         else if(itemCategory=="trouserAndShorts"){
+           //select = true;
+           var itemSubCategory = $("#SubCategoryTrouserShorts :selected").val();
+           // replace this if(itemSubCategory){select = true;} for select =true;
+           //if(itemSubCategory!="select"){select = true;}
+           if(itemSubCategory!="select"){
+             /**********DATA FOR MANDATORY ATTRIBUTES********/
+               var brand =[] ;
+               $('#idbrand :selected').each(function(i, sel){
+                   brand.push($(sel).val());
+                 });
+                 var brandTextbox = $('#idotherbrandtextbox').val();
+                 brand.push(brandTextbox);
+               var pattern =[] ;
+               $('#idpattern :selected').each(function(i, sel){
+                   pattern.push($(sel).val());
+               });
+               var material =[] ;
+               $('#idmaterial :selected').each(function(i, sel){
+                   material.push($(sel).val());
+               });
+               var occasion =[] ;
+               $('#idoccasion :selected').each(function(i, sel){
+                   occasion.push($(sel).val());
+               });
+               var collartype =[] ;
+               $('#idcollartype :selected').each(function(i, sel){
+                 var selectedCollarType = $(sel).val();
+                 if(selectedCollarType!='select'){
+                   collartype.push(selectedCollarType);
+                 }
+               });
+                 var collection =[] ;
+                 $('#idcollection :selected').each(function(i, sel){
+                   var selectedCollection = $(sel).val();
+                   if(selectedCollection!='select'){
+                     collection.push(selectedCollection);
+                   }
+                 });
+               var colour =[] ;
+               $('#idcolour :selected').each(function(i, sel){
+                   colour.push($(sel).val());
+               });
+               var length =[] ;
+               $('#idlength :selected').each(function(i, sel){
+                   length.push($(sel).text());
+               });
+               var trouserrise =[] ;
+               $('#idtrouserrise :selected').each(function(i, sel){
+                   trouserrise.push($(sel).val());
+               });
+
+             /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+             //select to true if all mandatory item selected out of 8 attributes
+                 if( material.length!=0 && pattern.length!=0 && collection.length !=0 && occasion.length!=0 && colour.length!=0 )
+                 { select = true;
+                   var other_text = $('#idotherdetailtext').val();
+                   annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'Length':length,'Trouserrise':trouserrise,'otherdetails':other_text};
+                   functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                  }
+                 else{
+                 data = 'WARNING: Select pattern,material,collection, occassion,and colour for the Trousers and Shorts.Brand and length are optional but preferably filled.Trouser-rise is optional';
+                 alert(data);
+                }
+             }
+         }//end of trousers and shorts
+
+
+         else if(itemCategory=="tightsAndSocks"){
+           //select = true;
+           var itemSubCategory = $("#SubCategoryTightSocks :selected").val();
+           // replace this if(itemSubCategory){select = true;} for select =true;
+           //if(itemSubCategory!="select"){select = true;}
+           /**********DATA FOR MANDATORY ATTRIBUTES********/
+           if(itemSubCategory!="select"){
+             var brand =[] ;
+             $('#idbrand :selected').each(function(i, sel){
+                 brand.push($(sel).val());
+               });
+               var brandTextbox = $('#idotherbrandtextbox').val();
+               brand.push(brandTextbox);
+             var pattern =[] ;
+             $('#idpattern :selected').each(function(i, sel){
+                 pattern.push($(sel).val());
+             });
+             var material =[] ;
+             $('#idmaterial :selected').each(function(i, sel){
+                 material.push($(sel).val());
+             });
+             var occasion =[] ;
+             $('#idoccasion :selected').each(function(i, sel){
+                 occasion.push($(sel).val());
+             });
+
+               var collection =[] ;
+               $('#idcollection :selected').each(function(i, sel){
+                 var selectedCollection = $(sel).val();
+                 if(selectedCollection!='select'){
+                   collection.push(selectedCollection);
+                 }
+               });
+             var colour =[] ;
+             $('#idcolour :selected').each(function(i, sel){
+                 colour.push($(sel).val());
+             });
+
+           /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+           //select to true if all mandatory item selected out of 8 attributes
+               if( colour.length!=0)
+               { select = true;
+                 var other_text = $('#idotherdetailtext').val();
+                 annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                 functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                 }
+               else{
+               data = 'WARNING: Select Colour for the Tight and Socks.Brandand Material are optional but preferably filled.Collection, Occasion and Pattern is optional.';
+               alert(data);
+              }
+            }
+         }//end of tight and socks
+
+         else if(itemCategory=="bags"){
+           //select = true;
+           var itemSubCategory = $("#SubCategoryBags :selected").val();
+           // replace this if(itemSubCategory){select = true;} for select =true;
+           //if(itemSubCategory!="select"){select = true;}
+           /**********DATA FOR MANDATORY ATTRIBUTES********/
+           if(itemSubCategory!="select"){
+             var brand =[] ;
+             $('#idbrand :selected').each(function(i, sel){
+                 brand.push($(sel).val());
+               });
+               var brandTextbox = $('#idotherbrandtextbox').val();
+               brand.push(brandTextbox);
+             var pattern =[] ;
+             $('#idpattern :selected').each(function(i, sel){
+                 pattern.push($(sel).val());
+             });
+             var material =[] ;
+             $('#idmaterial :selected').each(function(i, sel){
+                 material.push($(sel).val());
+             });
+             var occasion =[] ;
+             $('#idoccasion :selected').each(function(i, sel){
+                 occasion.push($(sel).val());
+             });
+               var collection =[] ;
+               $('#idcollection :selected').each(function(i, sel){
+                 var selectedCollection = $(sel).val();
+                 if(selectedCollection!='select'){
+                   collection.push(selectedCollection);
+                 }
+               });
+             var colour =[] ;
+             $('#idcolour :selected').each(function(i, sel){
+                 colour.push($(sel).val());
+             });
+
+           /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+           //select to true if all mandatory item selected out of 5 attributes
+               if( collection.length !=0 && occasion.length!=0 && colour.length!=0)
+               { select = true;
+                 var other_text = $('#idotherdetailtext').val();
+                 annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'otherdetails':other_text};
+                 functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                }
+               else{
+               data = 'WARNING: Select collection, occassion and colour for the Bag.Brand and Material are optional but preferably filled.';
+               alert(data);
+              }
+          }
+        }//end of bag
+        else if(itemCategory=="shoes"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryShoes :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          //if(itemSubCategory!="select"){select = true;}
+          /**********DATA FOR MANDATORY ATTRIBUTES********/
+          if(itemSubCategory!="select"){
+            var brand =[] ;
+            $('#idbrand :selected').each(function(i, sel){
+                brand.push($(sel).val());
+              });
+              var brandTextbox = $('#idotherbrandtextbox').val();
+              brand.push(brandTextbox);
+            var pattern =[] ;
+            $('#idpattern :selected').each(function(i, sel){
+                pattern.push($(sel).val());
+            });
+            var material =[] ;
+            $('#idmaterial :selected').each(function(i, sel){
+                material.push($(sel).val());
+            });
+            var occasion =[] ;
+            $('#idoccasion :selected').each(function(i, sel){
+                occasion.push($(sel).val());
+            });
+              var collection =[] ;
+              $('#idcollection :selected').each(function(i, sel){
+                var selectedCollection = $(sel).val();
+                if(selectedCollection!='select'){
+                  collection.push(selectedCollection);
+                }
+              });
+            var colour =[] ;
+            $('#idcolour :selected').each(function(i, sel){
+                colour.push($(sel).val());
+            });
+            var heel =[] ;
+            $('#idheeltype :selected').each(function(i, sel){
+                heel.push($(sel).val());
+            });
+            var heelHight =[] ;
+            $('#idheelhight :selected').each(function(i, sel){
+                heelHight.push($(sel).val());
+            });
+            var toe =[] ;
+            $('#idtoe :selected').each(function(i, sel){
+                toe.push($(sel).val());
+            });
+            var fastener =[] ;
+            $('#idfastener :selected').each(function(i, sel){
+                fastener.push($(sel).val());
+            });
+
+          /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+          //select to true if all mandatory item selected out of 5 attributes
+              if(pattern.length!=0 && material.length!=0  && colour.length!=0 && heel.length!=0 )
+              { select = true;
+                var other_text = $('#idotherdetailtext').val();
+                annotation_category_attribute_dict = {'Brand':brand,'Pattern':pattern,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'Heeltype':heel,'Toe':toe,'fastener':fastener,'Heelheight':heelHight,'otherdetails':other_text};
+                functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                }
+              else{
+              data = 'WARNING: Select pattern,material, colour and heelType for the Shoe.Brand, Collection and Occasion are optional but preferable filled. Heelheight, toe and fastener are optional.';
+              alert(data);
+             }
+          }
+        }//end of shoes mandatory attribute check
+        else if(itemCategory=="accessories"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryAllAccessories :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          //if(itemSubCategory!="select"){select = true;}
+          /**********DATA FOR MANDATORY ATTRIBUTES********/
+          if(itemSubCategory!="select"){
+            var brand =[] ;
+            $('#idbrand :selected').each(function(i, sel){
+                brand.push($(sel).val());
+              });
+              var brandTextbox = $('#idotherbrandtextbox').val();
+              brand.push(brandTextbox);
+            var pattern =[] ;
+            $('#idpattern :selected').each(function(i, sel){
+                pattern.push($(sel).val());
+            });
+            var material =[] ;
+            $('#idmaterial :selected').each(function(i, sel){
+                material.push($(sel).val());
+            });
+            var occasion =[] ;
+            $('#idoccasion :selected').each(function(i, sel){
+                occasion.push($(sel).val());
+            });
+              var collection =[] ;
+              $('#idcollection :selected').each(function(i, sel){
+                var selectedCollection = $(sel).val();
+                if(selectedCollection!='select'){
+                  collection.push(selectedCollection);
+                }
+              });
+            var colour =[] ;
+            $('#idcolour :selected').each(function(i, sel){
+                colour.push($(sel).val());
+            });
+
+
+          /***********END DATA FOR MANDATORY ATTRIBUTES*********/
+          //select to true if all mandatory item selected out of 5 attributes
+              if( material.length!=0 &&  colour.length!=0)
+              { select = true;
+                var other_text = $('#idotherdetailtext').val();
+                annotation_category_attribute_dict = {'Brand':brand,'Material':material,'Occasion':occasion,'Collection':collection,'Colour':colour,'Heeltype':heel,'Toe':toe,'fastener':fastener,'Heelheight':heelHight,'otherdetails':other_text};
+                functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_category_attribute_dict);
+                }
+              else{
+              data = 'WARNING: Select material, and colour for the Accessories.Collection, Occassion and Brand are optional but preferably filled. ';
+              alert(data);
+             }
+          }
+        }//end of accessories mandatory attribute check
+        else if(itemCategory=="select" && itemSubCategory=="select"){
+          select = false;
+        }
+
+        if(!select){
+          //alert("select false");
+        }
+
+
+      });
+    });
+/******************* FUNCTION TO SAVE ITEM *****/
+function functionToSaveItemInDatabase(itemCategory,itemSubCategory,annotation_dict_for_all_attributes){
+  //alert("SAVE ITEM FUNCTION");
+  // alert(JSON.stringify(annotation_dict_for_all_attributes));
+
+  //var other_text = $('#idotherDetailsTextBox').val();
+  //alert(other_text);
+  var annotation_dict = {};
+  var annotation_category_attribute_dict = {};
+
+  var chkbox_important_item = $('#importantItemInimage').is(":checked");
+  //alert(chkbox_important_item);
+  annotation_dict['ItemCategory'] = itemCategory;
+  annotation_dict['ItemSubCategory'] = itemSubCategory;
+  annotation_category_attribute_dict = annotation_dict_for_all_attributes;
+  if(chkbox_important_item){
+        var imp =[] ;
+	    annotation_category_attribute_dict['important'] = true;
+	    annotation_category_attribute_dict['important'] = imp.push('true');
+    //annotation_category_attribute_dict['important'] = true;
+    }
+  annotation_dict['FinalizeAnnotatedAttributes'] = annotation_category_attribute_dict;
+  //annotation_dict_all temporarily store all the item input
+  annotation_dict_all.push(annotation_dict) ;
+
+
+    if(confirm('Do you want to save item in Category: '+itemCategory+' and Sub Category: '+ itemSubCategory+' ?' ))
+    {
+          //alert(JSON.stringify(annotation_dict_all));
+          //TODO::Add ajax POST code and
+
+          var id = "{{id}}";
+          var annotator_name = "{{annotator_username}}";
+          annotation_dict_id_to_allitem["imageid"] = id;
+          annotation_dict_id_to_allitem["annotated_data"] = annotation_dict_all;
+          annotation_dict_id_to_allitem["annotator"] = annotator_name;
+          annotation_dict_id_to_allitem["instagramuser"] = "{{insta_username}}";
+          annotation_dict_id_to_allitem["save_item"] = true;
+          annotation_dict_id_to_allitem["all_id_annotated_info_dict_list"] ="{{all_id_annotated_info_dict_list| safe }}";
+          annotation_dict_id_to_allitem["image_url"] = "{{image_url}}";
+
+
+          annotation_dict_all = [];
+          annotation_dict = {};
+          //alert("item will be saved :: " +JSON.stringify(annotation_dict_id_to_allitem) );
+            /* {"imageid":"1678578859961994165","annotated_data":[{"ItemCategory":"blouseAndTunics","ItemSubCategory":"blouse","FinalizeAnnotatedAttributes":{"Brand":["abercrombieandfitch"],"Pattern":["striped"],"Collartype":["roundneck"],"Material":["cotton"],"Occasion":["party"],"Collection":["spring-summer"],"Colour":["black","white"]}}],"annotator":"umu","instagramuser":"cocorocha","save_item":true} */
+          var notificationString = [];
+          /* for (var i in annotation_dict_id_to_allitem)
+          {
+          } */
+          refreshAllDropdownOfBootstrapMultiselect();
+          $("#iditemCategory").val('select');
+          defaultSelectForItemSubCategory();
+          //hideAllAttributes();
+
+          /******************** AJAX POST for save item **********************/
+          $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(annotation_dict_id_to_allitem),
+                dataType: 'json',
+                url: '/fashionistasImageAnnotationMturkWorker',
+                success: function (response) {
+                  /** RESPONSE:: {"redirect": false,
+                   "success": true,
+                   "saveditemindb": [ {"ItemSubCategory": "Tunics", "ItemCategory": "blouseAndTunics", "FinalizeAnnotatedAttributes": {"Lining": [], "Brand": [], "Material": [], "otherdetails": "", "Collection": [], "trouserrise": [], "Length": [], "Pattern": ["animalprint", "colourgradient"], "Collartype": [], "Colour": [], "Occasion": []}}]}*/
+                    //alert('get Response');
+                    //alert(response.saveditemindb);
+                    //alert(response.saveditemindb.length);
+                    var saveditemindb = response.saveditemindb;
+                    item_count = response.saveditemindb.length;
+                    list_holds_save_item_to_finalize = response.saveditemindb;
+
+
+                    //alert("saved data"+ item_count);
+                    //TODO:Need to change the visibility of the table of saved items
+                    // $("#dv1").show();// and $("#dv1").hide();
+                    //sorted_annotated_saved_json_data = [];
+                    for (var i in saveditemindb)
+
+                    {
+                      var sorted_annotated_dict ={};
+                      //alert(saveditemindb[i].ItemCategory );
+                      item_count = item_count+1;
+                      var itemCat = saveditemindb[i].ItemCategory;
+                      var itemSubCat = saveditemindb[i].ItemSubCategory;
+                      var savedAnnotatedAttributes = saveditemindb[i].FinalizeAnnotatedAttributes;
+                      //alert (itemCat +itemSubCat+savedAnnotatedAttributes);
+                      if(itemCat == "ItemCategory"){
+                        sorted_annotated_dict["aItemCategory"] = itemCat;
+                      }
+                      if(itemSubCat == "ItemSubCategory"){
+                        sorted_annotated_dict["bItemSubCategory"] = itemSubCat;
+
+                      }
+                      if(savedAnnotatedAttributes == "FinalizeAnnotatedAttributes"){
+                        sorted_annotated_dict["cFinalizeAnnotatedAttributes"] = savedAnnotatedAttributes;
+                      }
+                      sorted_annotated_saved_json_data.push(sorted_annotated_dict);
+
+                    }// end of loop process server response to show in table()
+
+                    //alert(sorted_annotated_saved_json_data);
+
+
+                    if (response.redirect !== undefined && response.redirect) {
+                      $("#idSaveElementTableDiv").show();
+
+                        window.location.href = response.redirect_url;
+                        }
+
+
+
+
+                }, // ajax response require comma
+                error: function(error) {
+                //alert(e);
+                }
+                });
+          /******************* END AJAX POST for save item ***********************/
+
+    }
+    else{
+            alert("Your data is not saved.");
+            //
+            annotation_dict_all = [];
+            annotation_dict = {};
+            annotation_category_attribute_dict = {};
+        }
+
+
+}
+/****************** END FUNCTION TO SAVE ITEM ************************/
+    /*END-Save item button*/
+/*BEGIN -- finalize annotation of the image option button*/
+  $(document).ready(function() {
+    $('#finalizeannotationimageBtn').on('click', function() {
+      var i = $("#itemsel1 :selected").val();
+      var chkbox_nonfas = $('#notfashionimage').is(":checked");
+      /*check nonfashion checkbox*/
+      if (chkbox_nonfas) {
+        /*check fashionitem selection option*/
+        if(confirm('You mark this item as "Doesnt contain Fashion Items".So you will be redirecting to Fashionistas Album.Are you confirm about this?'))
+        {
+
+          //alert(" Nothing ");
+          var id = "{{id}}";
+
+          var annotator_name = "{{annotator_username}}";
+          annotation_dict_id_to_allitem["imageid"] = id;
+          annotation_dict_id_to_allitem["annotator"] = annotator_name;
+          annotation_dict_id_to_allitem["instagramuser"] = "{{insta_username}}";
+          annotation_dict_id_to_allitem["nonfashionitem"] = true;
+          annotation_dict_id_to_allitem["all_id_annotated_info_dict_list"] ="{{all_id_annotated_info_dict_list}}";
+
+          $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(annotation_dict_id_to_allitem),
+                dataType: 'json',
+                url: '/fashionistasImageAnnotationMturkWorker',
+                success: function (response) {
+                    alert("Successfully Finalize the annotation to Nonfashion item. ");
+                    if (response.redirect !== undefined && response.redirect) {
+			alert(response.redirect_url);
+                        window.location.href = response.redirect_url;
+                        }
+                },
+                error: function(error) {
+                //alert(e);
+                }
+                });
+
+
+          //var url = "http://127.0.0.1:5000/singleUserFolder/"+ "{{insta_username}}" + "?annotator_username=" + "{{annotator_username}}";
+          //$(location).attr('href',url);
+
+        }
+
+      }/*check nonfashion checkbox*/
+      else{
+        var styles =[] ;
+        $('#idfashionstyle :selected').each(function(i, sel){
+          var selectedStyles = $(sel).val();
+          if(selectedStyles!='select'){
+            styles.push(selectedStyles);
+          }
+        });
+        //alert(styles.length);
+
+
+
+        //WARNING: reading from jinja2 variable does not work here
+        //var annotated_json_data = "{{annotated_json_data| safe}}";
+
+
+        ///////////////////////////////////////////////////
+        var arrData=[];
+         // loop over each table row (tr)
+         $("#idSavedItemShowTable tr").each(function(){
+              var currentRow=$(this);
+              //find text for second column
+              var col1_value=currentRow.find("td:eq(1)").text();
+              //find text for first column
+              var col2_value=currentRow.find("td:eq(2)").text();
+              //find text for third column
+              var col3_value=currentRow.find("td:eq(3)").text();
+              //alert(col1_value+col2_value+col3_value);
+              var obj={};
+              //escaping the first heading
+              if(col1_value!="Item Category" && col2_value!="Item Sub Category" &&col3_value!="Annotated Attributes/Values" ){
+                obj.col1=col1_value;
+                obj.col2=col2_value;
+                obj.col3=col3_value;
+              }
+
+
+              arrData.push(obj);
+              //alert(arrData);
+         });
+         //alert(arrData);
+         //get the number of row in the saved item table
+         //alert(arrData.length);
+         var rowCount = $('#idSavedItemShowTable').rowCount();
+         //escaping the first heading from the row count
+         var number_of_saved_item = rowCount - 1;
+         //alert(number_of_saved_item);
+   ///////////////////////////////////////////////////
+        //total_item_annotated = annotated_json_data.length;
+        style_length = styles.length;
+        if(number_of_saved_item > 0 && style_length >0 ){
+          var alert_str = 'You have annotated the image with  '+ number_of_saved_item +'  different categories and classified style as: '+ styles +'. Are you sure you want to finalize this image annotation or you still have any more annotations?You will not be able to add other data later.';
+
+          if(confirm(alert_str)){
+            var id = "{{id}}";
+            var annotator_name = "{{annotator_username}}";
+            annotation_dict_id_to_allitem["imageid"] = id;
+            /*commenting the below value as we already saved item in save button click */
+            //annotation_dict_id_to_allitem["annotated_data"] = annotation_dict_all;
+            //annotation_dict_id_to_allitem["annotated_data"] = [];
+            annotation_dict_id_to_allitem["annotator"] = annotator_name;
+            annotation_dict_id_to_allitem["instagramuser"] = "{{insta_username}}";
+            annotation_dict_id_to_allitem["finalizeannotation"] = true;
+            annotation_dict_id_to_allitem["styles"] = styles;
+            annotation_dict_id_to_allitem["all_id_annotated_info_dict_list"] ="{{all_id_annotated_info_dict_list}}";
+
+           // alert(JSON.stringify(annotation_dict_id_to_allitem));
+
+            $.ajax({
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(annotation_dict_id_to_allitem),
+                  dataType: 'json',
+                  url: '/fashionistasImageAnnotationMturkWorker',
+                  success: function (response) {
+                      alert("You have successfully finalized the annotation for this image. Please click on the Submit button below the form so that you can submit the hit completely and move to the next hit ");
+                      if (response.redirect !== undefined && response.redirect) {
+
+                          window.location.href = response.redirect_url;
+                          }
+                  },
+                  error: function(error) {
+                  //alert(e);
+                  }
+                  });
+          }//if for confirmation dialogue
+          else{
+              alert("Image annotation is not Finalized. ");
+          }//else for confirmation dialogue
+
+        }//if for 'total_item_annotated' length check >0 && styles=0
+        else{
+          alert("WARNING: Please save all your annotations for each fashion item before click 'Finalize Annotation' button . Atlast select the styles from the drop down and then click 'Finalize Annotation' button to complete the annotation for this image.");
+        }//if for 'total_item_annotated' length check >0 && styles=0
+
+      } //end of confirmation dialogue
+
+        });
+  });
+  /*END -- finalize annotation of the image option button*/
+
+  //Helper function that gets a count of all the rows <TR> in a table body <TBODY>
+  $.fn.rowCount = function() {
+      return $('tr', $(this).find('tbody')).length;
+  };
+  /* BEGIN--ITEM DELETE BUTTON  */
+
+  $(document).ready(function() {
+    $("#idSavedItemShowTable").on("click",".btnDelete",function(){
+
+      var currentRow=$(this).closest("tr");
+      var col1=currentRow.find("td:eq(1)").text();
+       var col2=currentRow.find("td:eq(2)").text();
+        var col3=currentRow.find("td:eq(3)").html();
+
+        col1=$.trim(col1);
+        col2=$.trim(col2);
+        col3=$.trim(col3);
+        data= col1+col2+col3;
+
+        alert_str = "Do you want to delete the saved item in ' "+ col1 + " ' Category?The item will be permanantly delete.";
+        if(confirm(alert_str)){
+
+
+          $(this).closest('tr').remove();
+          var delete_item_detail_list = [];
+          var delete_item_detail = {};
+          var id = "{{id}}";
+          var annotator_name = "{{annotator_username}}";
+          delete_item_detail["imageid"] = id;
+          delete_item_detail["annotator"] = annotator_name;
+          delete_item_detail["instagramuser"] = "{{insta_username}}";
+          delete_item_detail["all_id_annotated_info_dict_list"] ="{{all_id_annotated_info_dict_list}}";
+          delete_item_detail["itemcategorytodelete"] = col1;
+          delete_item_detail["deleteitem"] = true;
+
+          //delete_item_detail_list
+          //alert(JSON.stringify(delete_item_detail));
+          $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(delete_item_detail),
+                dataType: 'json',
+                url: '/fashionistasImageAnnotationMturkWorker',
+                success: function (response) {
+                    //alert(response);
+                    alert("Successfully Delete item. ");
+
+                },
+                error: function(error) {
+                //alert(e);
+                alert("item not deleted");
+                }
+                });
+                //it loads data with existing dataset, so draw(false) prevent it to redraw with existing caching data
+                $(this).closest('tr').remove().draw( false );
+
+
+
+        }
+        else{
+
+        }
+
+
+
+
+     });
+    });
+
+  /* END --
+    });
+
+
+    ITEM DELETE BUTTON */
+
+
+</script>
+<!-- Following script creates thepie chart-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+
+var wordTableData=[];
+var header =  ["'" + "Fashion Vocabulary" + "'", "'" + "Count" + "'"];
+wordTableData.push(header);
+
+var count =0;
+         // loop over each table row (tr)
+         $("#dataTable tr").each(function(){
+              count = count+1;
+              var currentRow=$(this);
+              //find text for first column
+              var col1_value=currentRow.find("td:eq(0)").text();
+
+              var col2_value=currentRow.find("td:eq(1)").text();
+              //find text for third column
+              var col3_value=currentRow.find("td:eq(2)").text();
+
+              var obj={};
+              //escaping the first heading
+              //if(col1_value!= "Fashion Vocabulary" && col2_value!= "Related Word" && col3_value!= "Count" ){
+                if(count !=1  ){
+                    col1=$.trim(col1_value);
+                    col3=$.trim(col3_value);
+                    data= col1+col3;
+                     var val = ["'" + col1 + "'", col3*100];
+                     wordTableData.push(val);
+
+
+              }
+          });
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable(wordTableData);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'width':380, 'height':380};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script><!--pie chart end-->
+
+
+
+
+{% endblock %}

@@ -1,0 +1,71 @@
+
+
+  <div class = "row" style="display:None; background-color:#f5fcff;border: 1px solid blue; margin-top:10px" id = "idSaveItemCount">
+    {% set data_len = 0 %}
+    {% set data_len = annotated_json_data|length %}
+
+       <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid blue; height:50px;" ><!--div for first column-->
+            <p> The image is annotated with <strong>{{data_len}} </strong> items. The details annotated  information is provided below: </p>
+       </div>
+  </div>
+  <div class="row" style="background-color:#f5fcff;border: 1px solid blue;"><!-- div  row for DROPDOWN nad IMPORTANT check SAVE BUTTON -->
+
+    <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid blue; " ><!--div for first column-->
+
+          <table class="table table-striped">
+            <tr>
+                <th>Item Annoated Count</th>
+                <th>Item Category</th>
+                <th>Item Sub Category</th>
+                <th>Annotated Attributes/Values</th>
+
+            </tr>
+              {%set itm = 0 %}
+              {% for item in annotated_json_data:%}
+              <tr>
+                  {%set itm = itm + 1 %}
+                  <td>{{itm }}</td>
+
+              {% set annotated_data_dict = item|dictsort(true)  %}
+                  {{item|dictsort(true) }}
+
+                  <!--[('a', u'dresses'), ('b', u'cocktail'),
+                  ('c', {u'Lining': [], u'Brand': [], u'Material': [u'satin'], u'otherdetails': u'', u'Collection': [], u'trouserrise': [], u'Length': [], u'Pattern': [u'camouflage'], u'Collartype': [], u'Colour': [], u'Occasion': []  })]-->
+                {% for key, value in annotated_data_dict: %}
+
+
+                  {% if key == 'cFinalizeAnnotatedAttributes'%}
+                        <td><strong>
+                         {%   for k,v in value.items():%}
+                                {% if v: %}
+                                    {% set value_string = ', '.join(v)%}
+
+                                 <p>{{k}}{{' : '}}{{value_string}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            </strong>
+                        </td>
+
+                    {% endif %}
+
+                    {% if key == 'bItemSubCategory' %}
+                        <td><strong>{{value}}</strong></td>
+
+                    {% endif %}
+                  {% if key == 'aItemCategory':%}
+                        <td><strong>{{value}}</strong></td>
+                    {% endif %}
+
+
+            {% endfor %}
+                  </tr>
+          {% endfor %}
+
+
+    </table>
+
+
+    </div><!--div for first column-->
+
+    <br>
+  </div>

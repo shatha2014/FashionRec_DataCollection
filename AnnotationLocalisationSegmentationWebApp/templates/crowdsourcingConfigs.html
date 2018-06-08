@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block style %}
+<!-- login css -->
+<link rel="stylesheet" href="/static/style/style.css" type="text/css">
+
+{% endblock %}
+
+{% block content %}
+
+<div >
+
+    <p class="lead"><strong>Form</strong></p>
+
+</div>
+
+<form action="" method="POST" name ="form">
+	<div>
+		<div>
+
+			<div class="app-title">
+				<h1>Form Details {{annotator_username}}</h1>
+			</div>
+
+			<div  >
+				<div>
+				<input type="text" class="login-field" value="" placeholder="access-key" name="access-key">
+				<label class="login-field-icon fui-user" for="login-name"></label>
+				</div>
+
+				<div class="control-group" >
+				<input type="password" class="login-field" value="" placeholder="access-secret" name="access-secret">
+				<label class="login-field-icon fui-lock" for="login-pass"></label>
+				</div>
+
+                <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >
+			    <br>
+			</div>
+		</div>
+	</div>
+</form>
+<footer class="container-fluid text-center">
+  <p>Copyright &copy 2017- FashionRec Team</p>
+</footer>
+{% endblock %}

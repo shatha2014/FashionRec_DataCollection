@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block style %}
+
+  <link href="../static/css/main.css" rel="stylesheet" type="text/css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+
+
+  <script data-main="../static/js/main.js" src="{{ url_for('static', filename='js/require.js') }}"></script>
+<script type = text/javascript>
+    var xy = "{{id}}";
+</script>
+<script type = text/javascript>
+    var annotator_name = "{{annotator_username}}";
+</script>
+<script type = text/javascript>
+    var insta_user = "{{insta_username}}";
+</script>
+{% endblock %}

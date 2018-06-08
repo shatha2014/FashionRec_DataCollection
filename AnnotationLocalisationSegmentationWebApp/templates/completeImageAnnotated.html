@@ -1,0 +1,758 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="/static/style/gallery_template.css" type="text/css">
+ <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
+
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Include the plugin's  JS: -->
+ <script type="text/javascript" src="/static/bootstrap/js/bootstrap-multiselect.js"></script>
+{% endblock %}
+
+{% block content %}
+<!--**********************************TOP NAV BAR**********************************************-->
+<!-- Navigation for prev,next,allfolder, loged in user name and logout-->
+<nav class="navbar navbar-expand-lg  navbar-light bg-faded " style="background-color: #e3f2fd;" role="navigation">
+<div class="container-fluid"> <!-- Container for top navbar-->
+  <ul class = "nav  navbar-nav  nav-left ">
+{% set all_id_annotated_info_dict_list = all_id_annotated_info_dict_list %}
+{% set index = 0 %}
+{% set len =all_id_annotated_info_dict_list|length %}
+{# id #}
+{# image_url #}
+{% set prev = False %}
+{% set next = False %}
+{# prev #}
+{# next #}
+{% if id in all_id_annotated_info_dict_list %}
+  {% set current_image_info = all_id_annotated_info_dict_list.get(id)%}
+  {% set current_image_annotated_info = current_image_info["annotated"] %}
+  {# current_image_annotated_info #}
+{% endif%}
+
+  <li>  <a href="{{url_for('fashionistasImageAnnotation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,prev = True,option = option) }}">Previous Image </a></li>
+  <li>  <a href="{{url_for('fashionistasImageAnnotation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,next = True,option = option) }}">Next Image </a></li>
+  <li>  <a href="{{url_for('singleUserFolder',insta_username = insta_username,annotator_username = annotator_username,option = option)}}">All Images of this fashionista </a></li>
+  <li >  <h4 class ="text-center" style="position: absolute;left: 250px;display: flex;justify-content: center; font-family:Courier; color:#429bf4; font-size: 20px;">
+            {{insta_username}}
+
+
+        </h4>
+  </li>
+  </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <!--TODO:need to check the finalize option later-->
+      <li><a href="{{ url_for('allUserFolder',annotator_username = annotator_username,option = option) }}">All Folders</a>
+      </li>
+      <!-- finalize option-->
+        <li><p class="navbar-text "><strong>Logged in as : {{annotator_username}}</strong></p></li>
+        <li><p>  </p></li>
+        <li>
+          {% if current_user.is_authenticated() %}
+              <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+              <a href="{{ redirect(url_for('login')) }}"></a>
+          {% endif %}
+
+        </li> <!-- url of log_out-->
+      </ul>
+
+      <ul class = "nav navbar-nav nav-left" style="background-color: #429bf4">
+      <li >
+          <p class="text-center"><strong>In the data table, you can see the most relevant hashtags or words mentioned in the original post and comments of the image. Words are classified according to the style category.Percentage of words frequencies are shown in the pie chart.</strong> </p>
+        </li>
+
+      </ul>
+    </div><!-- END "Container for top navbar" -->
+    </nav>
+  <!-- END of "Navigation for prev,next,allfolder, loged in user name and logout"-->
+  <!--**********************************TOP NAV BAR**********************************************-->
+
+
+
+  <!--**********************************IMAGE; TABLE; PIE CHART**********************************************-->
+  <!-- div for image, words and piechart view -->
+    <div class = "container-fluid" style="background-color: #e3f2fd;"><!-- Container for image, words and piechart view -->
+      <div class = "row " style="background-color:#f5fcff; border-radius:15px;  margin-top:10px">
+        <div class="col-md-4 " style="background-color:lavender;border: 1px solid blue;width:420px;height:400px;"><!-- column1 for image-->
+              {% set binary_image_base64 = imagebinarydata %}
+              {% set image_type = 'data:image/jpg;base64,' %}
+              {% set final_image = image_type + binary_image_base64 %}
+
+            <img src={{final_image}} style="width:380px;height:380px">
+
+        </div><!-- End column1 for image-->
+
+
+        <div class="col-md-4"  style="background-color:lavender;border: 1px solid blue;height:400px"><!-- column2 for table-->
+          <div class="row"  >
+		<div class="table-responsive" style="overflow-x:scroll;overflow-y:scroll; height:380px; width:420px">
+              <table class="table table-striped " id = "dataTable">
+                 
+                    <tr>
+                      <th>Fashion Vocabulary</th>
+                      <th>Related Word</th>
+                      <th style = "display:None;">Count</th>
+                    </tr>
+                
+
+                  {% for k,v in text_data|dictsort(true): %}
+                      <tr>
+                          {% if v is mapping %}
+                              <td>{{k}}</td>
+                                {% set value_data = ', '.join(v['data'])%}
+                              <td>{{value_data}}</td>
+                              <td style = "display:None;">{{v['count']}}</td>
+
+                          {% else %}
+                              <td>{{k}}</td>
+                              <td>{{", ".join(v)}}</td>
+                              <td style = "display:None;">{{v|length}}</td>
+
+                        {% endif %}
+
+                      </tr>
+                  {% endfor %}
+
+              </table>
+          </div>
+	</div>
+        </div><!-- END column2 for table-->
+        <div class="col-md-4 " id = "piechart" style="background-color:lavender;border: 1px solid blue;  height:400px;"><!-- column 3 for pie-->
+	<div style="margin-top:10px;"></div>
+
+        </div><!-- END column 3 for pie-->
+      </div><!-- END of row for 3 columns-->
+    </div>    <!-- END of "Container for image, words and piechart view" -->
+  <!-- END of "div for image, words and piechart view" -->
+  <!--**********************************IMAGE; TABLE; PIE CHART**********************************************-->
+
+
+  <!--********************************** ANNOTATED ITEM COUNT **********************************************-->
+<div class = "container-fluid"><!-- div  container for QUESTION AND INSTRUCTION  -->
+
+       <p></p>
+       {%if liketkit: %}
+                     <p >Click on link of the "LikeToKnow" to get more details about items:
+                      <a href="{{liketkit[0]}}"> Liketoknoit link</a>
+                    </p>
+
+                {% else %}
+                 <p >No link of "LikeToKnow" exist</p>
+                {% endif %}
+
+      {% set data_len = 0 %}
+      {% set data_len = annotated_json_data|length %}
+
+      <div class = "row" style="background-color:#f5fcff;border: 1px solid blue; margin-top:10px">
+           <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid blue; height:50px;" ><!--div for first column-->
+                <p> The image is annotated with <strong>{{data_len}} </strong> items. The details annotated  information is provided below: </p>
+           </div>
+      </div>
+
+</div><!-- END div  container for QUESTION AND INSTRUCTION  -->
+<!--************************************ ANNOTATED ITEM COUNT ********************************************-->
+<br>
+
+<!--************************************ANNOTATED DATA DETAILS********************************************-->
+<div class="container-fluid">
+  <div class="row" style="background-color:#f5fcff;border: 1px solid blue;"><!-- div  row for DROPDOWN nad IMPORTANT check SAVE BUTTON -->
+
+    <div class ="col-md-12" style="background-color:#f5fcff;border: 1px solid blue; " ><!--div for first column-->
+
+          <table class="table table-striped ">
+            <tr>
+                <th>Item Annoated Count</th>
+                <th>Item Category</th>
+                <th>Item Sub Category</th>
+                <th>Annotated Attributes/Values</th>
+                <th>Annotated Style</th>
+
+            </tr>
+              {%set itm = 0 %}
+              {% for item in annotated_json_data:%}
+              <tr>
+                  {%set itm = itm + 1 %}
+                  <td>{{itm }}
+                </td>
+
+              {% set annotated_data_dict = item|dictsort(true)  %}
+                  {#item|dictsort(true) #}
+
+                  <!--[('a', u'dresses'), ('b', u'cocktail'),
+                  ('c', {u'Lining': [], u'Brand': [], u'Material': [u'satin'], u'otherdetails': u'', u'Collection': [], u'trouserrise': [], u'Length': [], u'Pattern': [u'camouflage'], u'Collartype': [], u'Colour': [], u'Occasion': []  })]-->
+                    <td>{# annotated_data_dict[0] is the ItemCategory #}
+                      <strong>{{annotated_data_dict[0][1] }}</strong>
+
+                    </td>
+                    <td>
+                      {# annotated_data_dict[1] is the ItemSubCategory #}
+                      {% if annotated_data_dict[1] %}
+                        <strong>{{annotated_data_dict[1][1] }}</strong>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {# annotated_data_dict[2] is the attributes #}
+
+                      {% if annotated_data_dict[2] %}
+
+                      <strong>
+                        {% set attributes_data = annotated_data_dict[2][1] %}
+                          {% for k,v in attributes_data.items(): %}
+                            {% if v  is iterable %}
+                                {% set value_string = ', '.join(v)%}
+                                {{k}}{{' : '}}{{value_string}} <br/>
+			    {% else %}
+				{{k}}{{' : '}}{{v}} <br/>
+                            {% endif %}
+                          {% endfor  %}
+                      </strong>
+                      {% endif %}
+
+
+                    </td>
+		{% if annotated_style: %}
+                    <td>{% for i in annotated_style: %}
+                    <strong>{{i}}</strong>
+                    {% endfor %}</td>
+		{% endif %}
+
+
+
+                  </tr>
+          {% endfor %}
+
+
+    </table>
+
+
+    </div><!--div for first column-->
+
+    <br>
+
+  </div>
+</div>
+<!--************************************ANNOTATED DATA DETAILS********************************************-->
+
+
+<!--**********************************BOTTOM NAV BAR**********************************************-->
+  <div class = "container-fluid"><!-- div  container for lower navbar  -->
+       <div class="row" ><!-- div  row for lower navbar -->
+
+         <ul class = "nav  navbar-nav navbar-left   ">
+           <li>  <a href="{{url_for('fashionistasImageAnnotation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,prev = True) }}">Previous Image </a></li>
+           <li>  <a href="{{url_for('fashionistasImageAnnotation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,next = True) }}">Next Image </a></li>
+       </ul>
+     </div><!-- div  row for lower navbar  end -->
+     </div><!-- div  container for lower navbar  end -->
+<!--**********************************BOTTOM NAV BAR**********************************************-->
+
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+var annotation_dict_id_to_allitem = {};
+var annotation_dict_all = []; //add temporary itemcategory
+var annotation_dict_all_to_json = {};
+var item_count = 0;
+
+
+$(function () {
+        $("#iditemCategory").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+              $("#AllPattern").hide();
+              $("#AllCollarType").hide();
+              $("#AllMaterial").hide();
+              $("#AllCollection").hide();
+              $("#AllOccasion").hide();
+              $("#OtherDetailsTextBox").hide();
+              $("#AllColour").hide();
+
+          }else if ($(this).val() == "blouseAndTunics") {
+            $("#SubCategoryblouseAndTunics").show();
+
+          }
+          else if ($(this).val() == "coats") {
+            $("#SubCategoryCoat").show();
+            $("#SubCategoryblouseAndTunics").hide();
+
+          }
+          else if ($(this).val() == "dresses") {
+            $("#SubCategoryDress").show();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+          }
+          else if ($(this).val() == "jackets") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").show();
+
+          }
+          else if ($(this).val() == "jeans") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").show();
+          }
+          else if ($(this).val() == "jumperAndCartigens") {
+            $("#SubCategoryDress").hide();
+            $("#SubCategoryblouseAndTunics").hide();
+            $("#SubCategoryCoat").hide();
+            $("#SubCategoryJacket").hide();
+            $("#SubCategoryJeans").hide();
+            $("#SubCategoryJumperCardigan").show();
+          }
+          else{
+            $("#otherdetails").hide();
+          }
+
+        });
+        /* for the BLOUSE and TUNIC item sub-category */
+        $("#idsubcatblouseTunic").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+
+          }else{
+            $("#otherdetails").hide();
+            $("#AllBrand").show();
+            $("#AllPattern").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            $("#AllCollection").show();
+            $("#AllOccasion").show();
+
+            $("#AllColour").show();
+            $("#OtherDetailsTextBox").show();
+          }
+
+        });
+
+        /* for the COAT item sub-category */
+        $("#idsubcatcoat").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+
+          }else{
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+            $("#AllLining").show();
+          }
+
+        });
+        /* for the DRESS item sub-category */
+        $("#idsubcatdress").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+
+
+          }else{
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllCollarType").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+            $("#AllLength").show();
+          }
+
+        });
+        /* for the JACKET item sub-category */
+        $("#idsubcatjacket").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllBrand").hide();
+
+          }else{
+            $("#otherdetails").hide();
+            $("#AllBrand").show();
+            $("#AllPattern").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            $("#AllCollection").show();
+            $("#AllOccasion").show();
+            $("#OtherDetailsTextBox").show();
+            $("#AllColour").show();
+            $("#AllLining").show();
+          }
+
+        });
+        /* for the JEANS item sub-category */
+        $("#idsubcatjeans").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+
+          }else{
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#AllLength").show();
+            $("#Alltrouserrise").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+
+        /* for the JUMPERS & CARDIGANS item sub-category */
+        $("#idsubcatjumpercardigan").change(function () {
+          /* for the select option in */
+          if ($(this).val() == "select") {
+              $("#otherdetails").show();
+              $("#AllPattern").hide();
+
+          }else{
+            $("#otherdetails").hide();
+            $("#AllPattern").show();
+            $("#AllOccasion").show();
+            $("#AllCollection").show();
+            $("#AllCollarType").show();
+            $("#AllMaterial").show();
+            $("#AllColour").show();
+            $("#AllBrand").show();
+            $("#OtherDetailsTextBox").show();
+
+          }
+
+        });
+    });
+
+
+    $(document).ready(function() {
+         $('#idbrand').multiselect();
+       });
+    $(document).ready(function() {
+        $('#idpattern').multiselect();
+      });
+
+    $(document).ready(function() {
+       $('#idcollartype').multiselect();
+      });
+
+    $(document).ready(function() {
+      $('#idmaterial').multiselect();
+    });
+    $(document).ready(function() {
+      $('#idoccasion').multiselect();
+      });
+
+    $(document).ready(function() {
+        $('#idcollection').multiselect();
+        });
+    $(document).ready(function() {
+      $('#idcolour').multiselect();
+            });
+  $(document).ready(function() {
+      $('#idlining').multiselect();
+  });
+  $(document).ready(function() {
+      $('#idlength').multiselect();
+  });
+
+  $(document).ready(function() {
+    $('#idtrouserrise').multiselect();
+  });
+
+  $(document).ready(function() {
+
+
+  });
+$(document).ready(function() {
+  $('#clearandaddnewitem').on('click', function() {
+    $("#otherdetails").show();
+    $("#iditemCategory").val("select");
+    $("#AllBrand").hide();
+    $("#AllLining").hide();
+    $("#AllLength").hide();
+    $("#AllPattern").hide();
+    $("#AllCollarType").hide();
+    $("#AllMaterial").hide();
+    $("#AllCollection").hide();
+    $("#AllOccasion").hide();
+    $("#OtherDetailsTextBox").hide();
+    $("#AllColour").hide();
+    $("#SubCategoryDress").hide();
+    $("#SubCategoryblouseAndTunics").hide();
+    $("#SubCategoryCoat").hide();
+    $("#SubCategoryJacket").hide();
+    $("#SubCategoryJeans").hide();
+    $("#SubCategoryJumperCardigan").hide();
+
+    //alert(json_annotation_dict);
+    //read jinja variable using ""
+    //alert("{{url_for('singleUserFolder',insta_username = insta_username,annotator_username = annotator_username)}}");
+
+
+      });
+
+
+
+  });
+  $("#itemsel1").change(function () {
+    /* for the select option in */
+    var chk = $("#itemsel1 :selected").text();
+    //alert(chk)
+
+  });
+  /*BEGIN-Save item button*/
+var select = false;
+    $(document).ready(function() {
+      $('#saveitem').on('click', function() {
+        var annotation_dict = {};
+        select = false;
+        var itemCategory = $("#iditemCategory :selected").val();
+        if (itemCategory=="blouseAndTunics"){
+          var itemSubCategory = $("#SubCategoryblouseAndTunics :selected").val();
+          if(itemSubCategory){select = true;}
+
+        }else if(itemCategory=="dresses"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryDress :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          if(itemSubCategory){select = true;}
+        }else if(itemCategory=="jackets"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryJacket :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          if(itemSubCategory){select = true;}
+        }else if(itemCategory=="jeans"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryJeans :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          if(itemSubCategory){select = true;}
+        }else if(itemCategory=="jumperAndCartigens"){
+        //  select = true;
+          var itemSubCategory = $("#SubCategoryJumperCardigan :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          if(itemSubCategory){select = true;}
+        }else if(itemCategory=="coats"){
+          //select = true;
+          var itemSubCategory = $("#SubCategoryCoat :selected").val();
+          // replace this if(itemSubCategory){select = true;} for select =true;
+          if(itemSubCategory){select = true;}
+        }else if(itemCategory=="select"){
+          select = false;
+        }
+        if (select){
+          var brand =[] ;
+          $('#idbrand :selected').each(function(i, sel){
+              brand.push($(sel).val());
+          });
+          var pattern =[] ;
+          $('#idpattern :selected').each(function(i, sel){
+              pattern.push($(sel).val());
+          });
+          var collartype =[] ;
+          $('#idcollartype :selected').each(function(i, sel){
+              collartype.push($(sel).val());
+          });
+          var material =[] ;
+          $('#idmaterial :selected').each(function(i, sel){
+              material.push($(sel).val());
+          });
+          var occasion =[] ;
+          $('#idoccasion :selected').each(function(i, sel){
+              occasion.push($(sel).val());
+          });
+          var collection =[] ;
+          $('#idcollection :selected').each(function(i, sel){
+              collection.push($(sel).val());
+          });
+          var colour =[] ;
+          $('#idcolour :selected').each(function(i, sel){
+              colour.push($(sel).val());
+          });
+          var lining =[] ;
+          $('#idlining :selected').each(function(i, sel){
+              lining.push($(sel).val());
+          });
+          var length =[] ;
+          $('#idlength :selected').each(function(i, sel){
+              length.push($(sel).val());
+          });
+          var trouserrise =[] ;
+          $('#idtrouserrise :selected').each(function(i, sel){
+              trouserrise.push($(sel).val());
+          });
+          var other_text = $('#OtherDetailsTextBox').val();
+          var chkbox_important_item = $('#importantItemInimage').is(":checked");
+          annotation_dict['itemCategory'] = itemCategory;
+          annotation_dict['itemSubCategory'] = itemSubCategory;
+          annotation_dict['brand'] = brand;
+          annotation_dict['pattern'] = pattern;
+          annotation_dict['collartype'] = collartype;
+          annotation_dict['material'] = material;
+          annotation_dict['occasion'] = occasion;
+          annotation_dict['collection'] = collection;
+          annotation_dict['colour'] = colour;
+          annotation_dict['lining'] = lining;
+          annotation_dict['length'] = length;
+          annotation_dict['trouserrise'] = trouserrise;
+          annotation_dict['otherdetails'] = other_text;
+          if(chkbox_important_item){
+            annotation_dict['important'] = true;
+          }
+
+
+          //annotation_dict_all temporarily store all the item input
+          annotation_dict_all.push(annotation_dict) ;
+          //alert(JSON.stringify(annotation_dict_all));
+        }
+        else{
+          alert("You didnt select any item category.");
+
+        }
+
+      });
+    });
+
+
+    /*END-Save item button*/
+/*BEGIN -- finalize annotation of the image option button*/
+  $(document).ready(function() {
+    $('#finalizeannotationimageBtn').on('click', function() {
+      var i = $("#itemsel1 :selected").val();
+      var chkbox_nonfas = $('#notfashionimage').is(":checked");
+      /*check nonfashion checkbox*/
+      if (chkbox_nonfas) {
+        /*check fashionitem selection option*/
+        if(confirm('You mark this item as "Doesnt contain Fashion Items".So you will be redirecting to Fashionistas Album.Are you confirm about this?'))
+        {
+          var url = "130.237.20.58/singleUserFolder/"+ "{{insta_username}}" + "?annotator_username=" + "{{annotator_username}}";
+          $(location).attr('href',url);
+
+        }
+
+      }/*check nonfashion checkbox*/
+      else{
+        total_item_annotated = annotation_dict_all.length;
+        if(total_item_annotated > 0){
+          var alert_str = 'You have annotated the image with  '+ total_item_annotated +'  different categories. Are you sure you want to finalize this image annotation or you still have any more annotations?';
+
+          if(confirm(alert_str)){
+            var id = "{{id}}";
+            var annotator_name = "{{annotator_username}}";
+            annotation_dict_id_to_allitem["imageid"] = id
+            annotation_dict_id_to_allitem["annotated_data"] = annotation_dict_all;
+            annotation_dict_id_to_allitem["annotator"] = annotator_name;
+            annotation_dict_id_to_allitem["instagramuser"] = "{{insta_username}}";
+
+            $.ajax({
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(annotation_dict_id_to_allitem),
+                  dataType: 'json',
+                  url: '/fashionistasImageAnnotation',
+                  success: function (response) {
+                      //alert(response);
+                      if (response.redirect !== undefined && response.redirect) {
+                          window.location.href = response.redirect_url;
+                          }
+                  },
+                  error: function(error) {
+                  //alert(e);
+                  }
+                  });
+          }//if for confirmation dialogue
+          else{
+
+          }//else for confirmation dialogue
+
+        }//if for 'total_item_annotated' length check >0
+        else{
+          var itemCategory = $("#iditemCategory :selected").val();
+          if(itemCategory){
+            alert('Please save the annotated item before finalize the annotation.');
+          }
+          else{
+          alert('Please annotate probable items for this image from dropdown list if the image contain fashion related items.');
+            }
+        }//else for 'total_item_annotated' length check >0
+
+      } //end of confirmation dialogue
+
+        });
+  });
+  /*END -- finalize annotation of the image option button*/
+
+
+</script>
+<!-- Following script creates thepie chart-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+// Load the Visualization API and the piechart package.
+google.charts.load('current', {'packages':['corechart']});
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawChart);
+
+var wordTableData=[];
+var header =  ["'" + "Fashion Vocabulary" + "'", "'" + "Count" + "'"];
+wordTableData.push(header);
+
+var count =0;
+         // loop over each table row (tr)
+         $("#dataTable tr").each(function(){
+              count = count+1;
+              var currentRow=$(this);
+              //find text for first column
+              var col1_value=currentRow.find("td:eq(0)").text();
+
+              var col2_value=currentRow.find("td:eq(1)").text();
+              //find text for third column
+              var col3_value=currentRow.find("td:eq(2)").text();
+
+              var obj={};
+              //escaping the first heading
+              //if(col1_value!= "Fashion Vocabulary" && col2_value!= "Related Word" && col3_value!= "Count" ){
+                if(count !=1 ){
+                    col1=$.trim(col1_value);
+                    col3=$.trim(col3_value);
+                    data= col1+col3;
+                     var val = ["'" + col1 + "'", col3*100];
+                     wordTableData.push(val);
+
+              }
+          });
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = new google.visualization.DataTable();
+  var data = google.visualization.arrayToDataTable(wordTableData);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'width':380, 'height':380};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script><!--pie chart end-->
+
+
+{% endblock %}

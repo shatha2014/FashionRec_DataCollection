@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="/static/style/gallery_template.css" type="text/css">
+{% endblock %}
+
+{% block content %}
+<!-- Navigation for info, loged in user name and logout-->
+<nav class="navbar navbar-expand-lg  navbar-light bg-faded " style="background-color: #e3f2fd;" role="navigation">
+<div class="container">
+    <ul class="nav navbar-nav navbar-right">
+        <li><p class="navbar-text "><strong>Logged in as : {{annotator_username}}  </strong></p></li>
+        <li><p>  </p></li>
+        <li>
+          {% if current_user.is_authenticated() %}
+              <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+              <a href="{{ redirect(url_for('login')) }}"></a>
+          {% endif %}
+        </li> 
+      </ul>
+    <ul class = "nav  nav-tabs  nav-left">
+      <p><h4> Dear Annotator: </h4>Folders that are marked with a filled check box(in red) are annotated by you, and folders that are marked with un-filled check box(still red) are still not completely done. Please click on any folder to start the annotation process.</p>
+    </ul>
+</div>
+</nav>
+  <!-- END of "Navigation for info, loged in user name and logout"-->
+
+<!-- div for all folder view -->
+  <div class = "container " style="background-color: #e3f2fd;">
+
+      <div class = "row text-center">
+        {% set name_url_json = name_propic_json%}
+          {% for data in name_propic_json %}
+            {% set url  = data['profile_pic_url'] %}
+            {% set user = data['username'] %}
+            {% set name = data['name'] %}
+            {% set annotationinfo = data['annotation_complete']%}
+            {% set binary_image_base64 = data['binary_profile_pic_base64'] %}
+            {% set image_type = 'data:image/jpg;base64,' %}
+            {% set final_image = image_type + binary_image_base64 %}
+	    
+	
+
+          <div class="col-md-3 ">
+              <div class="thumbnail">
+                  <a href="{{url_for('singleUserFolder', insta_username = user,annotator_username=annotator_username, option = option) }}">
+                    <div class="wrapper">
+                        <!-- <img src= "{{url}}"/> -->
+                        <img src= "{{final_image}}" />
+                       {% if annotationinfo  %}
+                        <span class="glyphicon glyphicon-ok-sign" style="left: 200px; color: red;"></span>
+                        
+                        {% else %}
+                        <span class="glyphicon glyphicon-ok-circle" style="left: 200px; color: red;"></span>
+
+                        {% endif %}
+                    </div>
+                    <div class="caption">
+                      <p class = "text-center" >
+                          {{name}}
+                      </p>
+                    </div>
+                  </a>
+              </div>
+            </div>
+          {% endfor%}
+      </div>
+
+  </div>
+  <!-- END of "div for all folder view" -->
+
+
+
+{% endblock %}

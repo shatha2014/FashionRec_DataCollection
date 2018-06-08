@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% block style %}
+<!-- login css -->
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="/static/style/style.css" type="text/css">
+
+<!-- login js -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="../static/bootstrap/js/localisation.js"></script>
+{% endblock %}
+
+{% block content %}
+
+
+<!--**********************************TOP NAV BAR**********************************************-->
+<!-- Navigation for prev,next,allfolder, loged in user name and logout-->
+<nav class="navbar navbar-expand-lg  navbar-light bg-faded " style="background-color: #e3f2fd;" role="navigation">
+    <h2 class="home" style="color: #2e6da4">Localisation Form</h2>
+    <h4 class="home" style="color: #2e6da4"><b>Dear annotator,Please Localize the following Image after reading instructions, Click Submit to save!</b></h4>
+    <h4 class="home" style="color: #2e6da4"><b>Please scroll down to ĺook at detailed text analysis for given image for additional Information.</b></h4>
+<div class="container-fluid"> <!-- Container for top navbar-->
+  <ul class = "nav  navbar-nav  nav-left ">
+{% set all_id_annotated_info_dict_list = all_id_annotated_info_dict_list %}
+{% set index = 0 %}
+{% set len =all_id_annotated_info_dict_list|length %}
+{# id #}
+{#image_url#}
+{% set prev = False %}
+{% set next = False %}
+{# prev #}
+{# next #}
+
+{% if id in all_id_annotated_info_dict_list %}
+{% set current_image_info = all_id_annotated_info_dict_list.get(id)%}
+{% set current_image_annotated_info = current_image_info["annotated"] %}
+{# current_image_annotated_info #}
+{% endif%}
+  <li>  <a href="{{url_for('localisation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,prev = True,option = option) }}">Previous Image </a></li>
+  <li>  <a href="{{url_for('localisation', annotator_username = annotator_username,insta_username =insta_username,image_url = image_url, img_id = id,all_id_annotated_info_dict_list = all_id_annotated_info_dict_list,next = True,option = option) }}">Next Image </a></li>
+  <li>  <a href="{{url_for('singleUserFolder',insta_username = insta_username,annotator_username = annotator_username,option = option)}}">All Images of this fashionista </a></li>
+  <li >  <h4 class ="text-center" style="position: absolute;left: 250px;display: flex;justify-content: center; font-family:Courier; color:#429bf4; font-size: 20px;">
+            {{insta_username}}
+        </h4>
+  </li>
+  </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <!--TODO:need to check the finalize option later-->
+      <li><a href="{{ url_for('allUserFolder',annotator_username = annotator_username,option = option) }}">All Folders</a>
+      </li>
+      <!-- finalize option-->
+        <li><p class="navbar-text "><strong>Logged in as : {{annotator_username}}</strong></p></li>
+        <li><p>  </p></li>
+        <li>
+          {% if current_user.is_authenticated() %}
+              <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+              <a href="{{ redirect(url_for('login')) }}"></a>
+          {% endif %}
+
+        </li> <!-- url of log_out-->
+      </ul>
+    </div><!-- END "Container for top navbar" -->
+    </nav>
+  <!-- END of "Navigation for prev,next,allfolder, loged in user name and logout"-->
+  <!--**********************************TOP NAV BAR**********************************************-->
+
+
+<!-- Instructions Block starts -->
+<div>
+    <a href="{{url_for('localisationinstructions', annotator_username = annotator_username,insta_username = insta_username)}}"><h4><b>Detailed Instructions for Localisation</b></h4></a></label>
+</div>
+<!-- Instructions Block Ends -->
+
+
+
+<!-- Bounding Box annotator starts -->
+<div>
+{% set binary_image_base64 = imagebinarydata %}
+{% set image_type = 'data:image/jpg;base64,' %}
+{% set final_image = image_type + binary_image_base64  %}
+{%if imagebinarydatas%}
+    <h3><b>Localised Image Result</b></h3>
+    <img src ="{{imagebinarydatas}}" style="width:450px;height:600px">
+    {%else%}
+<div id="bbox_annotator" style="display:inline-block"  align="center"   >
+
+    <!--<div id="bbox_annotator" style="display:inline-block"  align="center" width="380" height="380px" data-src = "{{image_url}}">-->
+</div>
+<div style="display:inline-block;vertical-align:top;">
+    <form action="" method="POST" name ="form" id = "locform">
+        <div>
+            <textarea id="annotation_data" name="annotation" rows="30" cols="50" style="font-family:monospace;" readonly></textarea>
+
+        </div>
+    </form>
+  <div>
+    <input id="reset_button" class="btn-primary" type="reset" />
+
+    <input id="submit_button" class="btn-primary" type="submit" />
+
+  </div>
+</div>
+
+    <!--nonfashionitem starts-- todo: align them right--->
+
+  <div>
+   <label><input id="notfashionimage" type="checkbox">  Mark the item as "Doesn't contain Fashion Items" </label>
+      <a href="/static/appdata/CriteriaofAnnotatingimages.pdf" type="application/pdf">(Detailed criteria of non fashion item)</a>
+  </div>
+
+<!--non fashion item ends-->
+    {%endif%}
+ <!-- bbox, text area, buttons ends-->
+
+
+
+
+<!-- JS code starts-->
+<script type="text/javascript">
+    //var im = document.getElementById("bbox_annotator").getAttribute("data-src") ;
+
+$(document).ready(function() {
+  // Initialize the bounding-box annotator.
+  var annotator = new BBoxAnnotator({
+    //url: document.getElementById("bbox_annotator").getAttribute("data-src"),
+    url: "../static/resized/resized_image_"+"{{id}}"+".jpg",
+    input_method: 'text',    // Can be one of ['text', 'select', 'fixed']
+    labels: "object",
+    onchange: function(entries) {
+      // Input the text area on change. Use "hidden" input tag unless debugging.
+      // <input id="annotation_data" name="annotation_data" type="hidden" />
+      // $("#annotation_data").val(JSON.stringify(entries))
+      $("#annotation_data").text(JSON.stringify(entries, null, "  "));
+    }
+
+  });
+  // Initialize the reset button.
+  $("#reset_button").click(function(e) {
+    annotator.clear_all();
+  });
+/*
+$(function() {
+
+     $("#finalize_button").click(function() {
+        alert ("Hi");
+        html2canvas($("#testdiv"), {
+        onrendered: function(canvas) {
+            // canvas is the final rendered <canvas> element
+            var myImage = canvas.toDataURL("image/png");
+            document.getElementById('divpic').src = myImage;
+            alert (myImage);
+
+        }//onrendered ends
+    }); //html2canvas ends
+          }); //click functionpart1
+
+});*/
+
+        //Putting submit code here
+$(function() {
+    $("#submit_button").click(function() {
+
+
+        /*Validation for empty form*/
+        var isValid = true;
+        var elements = document.getElementById('locform').getElementsByTagName('textarea');
+        var chkbox_nonfas = $('#notfashionimage').is(":checked");
+        var id = "{{id}}"; //fetch image id from jinja
+        var data = $('#annotation_data').val(); //get data form values where BBox data is saved
+        //alert("I am raw data"+data);
+
+         var insta_username = "{{insta_username}}";
+         //alert("I am insta_username"+insta_username);
+
+         var annotator_username = "{{annotator_username}}";
+         //var myImage;
+
+        for(var i=0; i < elements.length; i++){
+            if(elements[i].value.length < 1){
+                isValid = false;
+            }
+        }
+
+        var data1;
+        if(!chkbox_nonfas)
+        {
+            data1= {annotation: data,im: id, insta_username:insta_username,annotator_username:annotator_username,nonfashion:chkbox_nonfas};
+        }
+
+
+        else if(chkbox_nonfas){
+            data1= {im: id, insta_username:insta_username,annotator_username:annotator_username,nonfashion:chkbox_nonfas};
+        }
+
+
+        if(!isValid && !chkbox_nonfas)
+        {
+            alert('Please Perform localisation of Fashionista in given Image!');
+        }
+
+        else if(isValid||chkbox_nonfas||!chkbox_nonfas){
+
+        html2canvas($("#testdiv"), {
+             onrendered: function(canvas) {
+            // canvas is the final rendered <canvas> element
+             var myImage = canvas.toDataURL("image/png");
+             //document.getElementById('divpic').src = myImage;
+             //var appendimage = {bin:myImage};
+             data1.binimage = myImage;
+             //alert(send);
+             //alert (data1);
+               $.ajax({
+                url: '/localisation',
+                data: data1, //using multiple data values support ajax
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                    alert("Well Done, Data has been saved!!");
+                    if (response.redirect !== undefined && response.redirect) {
+                        window.location.href = response.redirect_url;
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+                }//onrendered ends
+            }); //html2canvas ends
+
+        }
+        /*
+        else if(chkbox_nonfas){
+            alert("This Item is marked as non fashion Item");
+
+
+        }*/
+
+        /*Code for empty form ends*/
+    });
+});
+
+});
+
+
+
+</script>
+    <!-- JS code ends -->
+</div>
+<!-- Bounding Box annotator ends -->
+
+
+ <!--**********************************IMAGE; TABLE; PIE CHART**********************************************-->
+  <!-- div for image, words and piechart view -->
+    <div class = "container-fluid" style="background-color: #e3f2fd;"><!-- Container for image, words and piechart view -->
+      <div class = "row " style="background-color:#f5fcff; border-radius:15px;  margin-top:10px">
+        <div class="col-md-4 " style="background-color:lavender;border: 1px solid blue;width:420px;height:400px;"><!-- column1 for image-->
+             <img src={{final_image}} style="width:380px;height:380px">
+
+
+        </div><!-- End column1 for image-->
+
+
+        <div class="col-md-4"  style="background-color:lavender;border: 1px solid blue;height:400px"><!-- column2 for table-->
+          <div class="row"  >
+		<div class="table-responsive" style="overflow-x:scroll;overflow-y:scroll; height:380px; width:420px">
+          <table class="table table-striped " id = "dataTable">
+
+                    <tr>
+                      <th width="100">Fashion Vocabulary</th>
+                      <th>Related Word</th>
+                      <th style = "display:None;">Count</th>
+                    </tr>
+
+
+                  {% for k,v in text_data.items(): %}
+                      <tr>
+                          {% if v is mapping %}
+                              <td>{{k}}</td>
+                                {% set value_data = ', '.join(v['data'])%}
+                              <td>{{value_data}}</td>
+                              <td style = "display:None;">{{v['count']}}</td>
+                          {% else %}
+                              <td>{{k}}</td>
+                              <td>{{", ".join(v)}}</td>
+                              <td style = "display:None;">{{v|length}}</td>
+
+                        {% endif %}
+                      </tr>
+                  {% endfor %}
+
+            </table>
+	   </div>
+          </div>
+        </div><!-- END column2 for table-->
+        <div class="col-md-4 " id = "piechart" style="background-color:lavender;border: 1px solid blue; height:400px;"><!-- column 3 for pie-->
+	<div  style="margin-top:10px;"></div>
+
+        </div><!-- END column 3 for pie-->
+      </div><!-- END of row for 3 columns-->
+    </div>    <!-- END of "Container for image, words and piechart view" -->
+  <!-- END of "div for image, words and piechart view" -->
+  <!--**********************************IMAGE; TABLE; PIE CHART**********************************************-->
+
+<!-- Following script creates thepie chart-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+
+var wordTableData=[];
+var header =  ["'" + "Fashion Vocabulary" + "'", "'" + "Count" + "'"];
+wordTableData.push(header);
+
+var count =0;
+         // loop over each table row (tr)
+         $("#dataTable tr").each(function(){
+              count = count+1;
+              var currentRow=$(this);
+              //find text for first column
+              var col1_value=currentRow.find("td:eq(0)").text();
+
+              var col2_value=currentRow.find("td:eq(1)").text();
+              //find text for third column
+              var col3_value=currentRow.find("td:eq(2)").text();
+
+              var obj={};
+              //escaping the first heading
+              //if(col1_value!= "Fashion Vocabulary" && col2_value!= "Related Word" && col3_value!= "Count" ){
+                if(count !=1  ){
+                    col1=$.trim(col1_value);
+                    col3=$.trim(col3_value);
+                    data= col1+col3;
+                     var val = ["'" + col1 + "'", col3*100];
+                     wordTableData.push(val);
+
+
+              }
+          });
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable(wordTableData);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'width':370, 'height':370};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script><!--pie chart end-->
+
+
+<!-- Footer starts -->
+<footer class="container-fluid text-center">
+  <p>Copyright &copy 2017- FashionRec Team</p>
+</footer>
+<!-- Footer Ends -->
+{% endblock %}

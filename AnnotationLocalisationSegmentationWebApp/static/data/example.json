@@ -1,0 +1,30 @@
+{
+  "labels": [
+    "Eraser",
+    "Blouse & Tunics",
+    "Coats",
+    "Dresses",
+    "Jeans",
+    "Jackets",
+    "Jumper & Cardigans",
+    "Skirts",
+    "Tights & Socks",
+    "Tops & T-shirts",
+    "Trousers & Shorts",
+    "Shoes",
+    "Bags",
+    "Belts",
+    "Gloves",
+    "Hats & Cap",
+    "Jewellary & Watch",
+    "Purses",
+    "Scarves & Shawls",
+    "Sunglasses"
+  ],
+  "imageURLs": [
+    "static/data/images/Fashionista.jpg"
+  ],
+  "annotationURL":[
+    "1.png"
+  ]
+}

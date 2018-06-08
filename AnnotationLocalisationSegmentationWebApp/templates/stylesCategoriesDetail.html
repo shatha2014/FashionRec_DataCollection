@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="/static/style/gallery_template.css" type="text/css">
+{% endblock %}
+
+{% block content %}
+<!--**********************************TOP NAV BAR**********************************************-->
+<!-- Navigation for prev,next,allfolder, loged in user name and logout-->
+<nav class="navbar navbar-expand-lg  navbar-light bg-faded " style="background-color: #e3f2fd;" role="navigation">
+<div class="container-fluid"> <!-- Container for top navbar-->
+  <ul class = "nav  navbar-nav  nav-left ">
+
+  <li>  <a href="{{url_for('singleUserFolder',insta_username = insta_username,annotator_username = annotator_username)}}">All Images of this fashionista </a></li>
+  <li >  <h4 class ="text-center" style="position: absolute;left: 250px;display: flex;justify-content: center; font-family:Courier; color:#429bf4; font-size: 20px;">
+            {{insta_username}}
+
+
+        </h4>
+  </li>
+  </ul>
+    <ul class="nav navbar-nav navbar-right">
+
+      <li><a href="{{ url_for('allUserFolder',annotator_username = annotator_username) }}">All Folders</a>
+      </li>
+
+        <li><p class="navbar-text "><strong>Logged in as : {{annotator_username}}</strong></p></li>
+        <li><p>  </p></li>
+        <li>
+          {% if current_user.is_authenticated() %}
+              <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+              <a href="{{ redirect(url_for('login')) }}"></a>
+          {% endif %}
+
+        </li> <!-- url of log_out-->
+      </ul>
+
+
+    </div><!-- END "Container for top navbar" -->
+    </nav>
+  <!-- END of "Navigation for prev,next,allfolder, loged in user name and logout"-->
+  <!--**********************************TOP NAV BAR**********************************************-->
+<embed src="/static/appdata/HowtoDefineStyleWhatarePossibleStyleCategories.pdf" type="application/pdf"   height="1000px" width="100%">
+
+
+{% endblock %}
+{% block script %}
+
+
+
+{% endblock %}
