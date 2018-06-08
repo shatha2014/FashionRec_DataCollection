@@ -9,7 +9,7 @@ Requirements
 $ bash run.sh
 ```
 
-2. It will promt the user with item category (like- Blouse & Tunic,Dresses,Coats and so on) and Sub-category as follows:
+2. It will promt the user with item category (like- Blouse & Tunic,Dresses,Coats and so on) and Sub-category for each category.
 
 
 3. Select the desired item category and it will download all the items images and their metadata and store them in the MongoDB. 
