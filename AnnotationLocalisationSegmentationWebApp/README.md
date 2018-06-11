@@ -7,7 +7,7 @@ Requirements
 -----
 1. Create virtual environment
 ```bash
-$ virtualenv venv
+$ virtualenv venv-web-solution
 ```
 
 2. Activate virtual environment 
