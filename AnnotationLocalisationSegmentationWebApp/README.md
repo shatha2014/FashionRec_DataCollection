@@ -1,7 +1,15 @@
 Annotation-Localisation-Segmentattion Web Application
 ==========================
 
-This is a flask-based web application that is used to annotate a fashion relate image  with all possible attributes according to its fashion items and store data in MongoDB database.Moreover it facilitates the localisation and pixel-by-pixel segmentation. Its backend is written in python and frontend is written in html, javascript,jquery AJAX and Jinja2. 
+This is a flask-based web application that is used to annotate a fashion relate image  with all possible attributes according to its fashion items and store data in MongoDB database.Moreover, it facilitates the localisation and pixel-by-pixel segmentation. Its backend is written in python and frontend is written in html, javascript,jquery AJAX and Jinja2. 
+
+Modules 
+-----
+1. ./node_modules - contains 3 npm modules - ./base64-arraybuffer, ./css-line-break and ./html2canvas. They are used for localisation and segmentation to capture annotated images and encoding/decoding to base64 binary. 
+
+2. ./static- contains all the staic data files like- appdata, css, bootstrap, css etc.
+3. ./templates - contains all the front-end view in html.
+4. 
 
 Requirements 
 -----
@@ -45,11 +53,19 @@ However, this websolution is deployed in the Apache server by creating a configu
 
 To be able to run it in the Flask development server one needs to add the IP address in the code snippet 'annotation_app.run('IP','PORT')'. Also, need to replace all URL 'https://shatha2.it.kth.se/' to corresponding address with IP and port.
 
-Usage
+Description
 -----
 
-After succesful login you will be redirected to a page that contain three options- 1)Detail Annottaion, 2) Localisation adn 3) Segmentation. Selecting any of the three option will direct to a gallery view of different fashionistas. Upon clicking one of the gallery thumbnail you will be redirected to a page where all the assigned images will be visible as thumbnail. Each of the thumbnail contains a checkbox either filled or unfilled.  By clicking a image with unfilled checkbox will be redirected to a page where you can annotate the image. In the annotation page there is provided a dropdown list of fashion item category, subcategory and their attributes. You can annotate one fashion item  and save them. Before adding another fashion item annottaion it is recommended to click clear and add new item button. After completing the annotation for all items click the 'Finalize Annotation' button. After completing the final annotation you will be redirected to the fashionistas gallery folder. 
+After succesful login you will be redirected to a page that contain three options- 1)Detail Annottaion, 2) Localisation and 3) Segmentation. Selecting any of the three option will direct to a gallery view of different fashionistas. Upon clicking one of the gallery thumbnail you will be redirected to a page where all the assigned images will be visible as thumbnail. Each of the thumbnail contains a checkbox either filled or unfilled.  By clicking a image with unfilled checkbox will be redirected to a page where you can annotate the image. In the annotation page there is provided a dropdown list of fashion item category, subcategory and their attributes. You can annotate one fashion item  and save them. Before adding another fashion item annottaion it is recommended to click clear and add new item button. After completing the annotation for all items click the 'Finalize Annotation' button. After completing the final annotation you will be redirected to the fashionistas gallery folder. 
 
+Usage
+-----
+Execute following commnad to start web-application:
+```bash
+
+python views.py
+
+```
 
 
 
