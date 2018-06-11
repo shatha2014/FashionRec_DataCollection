@@ -66,8 +66,67 @@ Execute following commnad to start web-application:
 python views.py
 
 ```
+**To Query Database:**
+
+**DB command for Segmentation:**
+
+1. use segmentation   (Always execute it first to use the database)
+2. Search based on specific image id of fashionista:
+```bash
+     db.segmenteddata.find({"ImageID" : "1129741704208628631"}).pretty()
+```
+3. To see all records
+```bash
+    db.segmenteddata.find().pretty()
+   ```
+4. Search based on specific fashionista name
+```bash
+    db.segmenteddata.find({"insta_username" : "jessi_afshin"}).pretty()
+```
+5. Search based on specific annotator name
+```bash
+    db.segmenteddata.find({"annotator_username" : "mallu"}).pretty()
+```
 
 
+
+
+**DB command for Localisation:**
+1. use localisation   (Always execute it first to use the database)
+2. Search based on specific image id of fashionista
+```bash
+     db.localiseddata.find({"image_id" : "1129741704208628631"}).pretty()
+```
+3. To see all records
+```bash
+    db.localiseddata.find().pretty()
+```
+4. Search based on specific fashionista name
+```bash
+    db.localiseddata.find({"insta_username" : "jessi_afshin"}).pretty()
+```
+5. Search based on specific annotator name
+```bash
+    db.localiseddata.find({"annotator_name" : "mallu"}).pretty()
+```
+**DB command for Annotation:**
+1. use annotatorwebapp   (Always execute it first to use the database)
+2. Search based on specific image id of fashionista and annotator:
+```bash
+     db.annotateddatadetailwithuser.find({"imageid" : "1662569323480290687","annotatorusername" : "umu","fashionistausername" : "apincholovely"}).pretty()
+```
+3. To see all records that is annotated:
+```bash
+    db.annotateddatadetailwithuser.find().pretty()
+```
+4. Search based on specific fashionista name (which may also contain different annotator images)
+```bash
+    db.annotateddatadetailwithuser.find({"insta_username" : "jessi_afshin"}).pretty()
+```
+5. Search based on specific annotator name:
+```bash
+    db.annotateddatadetailwithuser.find({"annotatorusername" : "umu"}).pretty()
+```
 
 License
 -------
