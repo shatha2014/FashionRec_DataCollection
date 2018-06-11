@@ -16,7 +16,12 @@ $ virtualenv venv-instascraper
 $ source venv/bin/activate
 ```
 
-3. Execute setup.py
+3. Execute pip install command
+```bash
+pip install -r requirements.txt
+```
+
+4. Execute setup.py
 ```bash
 python setup.py develop
 ```
