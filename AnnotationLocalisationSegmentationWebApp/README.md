@@ -121,9 +121,9 @@ python views.py
 ```
 4. Search based on specific fashionista name (which may also contain different annotator images)
 ```bash
-    db.annotateddatadetailwithuser.find({"insta_username" : "jessi_afshin"}).pretty()
+    db.annotateddatadetailwithuser.find({"fashionistausername" : "jessi_afshin"}).pretty()
 ```
-5. Search based on specific annotator name:
+5. Search based on specific annotator name (which will give all assigned image to the specific annotator)
 ```bash
     db.annotateddatadetailwithuser.find({"annotatorusername" : "umu"}).pretty()
 ```
