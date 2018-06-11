@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<body>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+   <h1>Fashion Dataset Retriever</h1>
+
+    {% block dataset%} {% endblock %}
+    
+    {% if request.path == '/' or request.path == '/index' %}
+    <p><a href="{{ url_for('policy') }}"><b>Check out the Privacy Policy</b></a></p>
+    <p> <a href="{{ url_for('description') }}"><b>About Fashion Dataset Retriever </b></a></p>
+    <p><a href="{{ url_for('logininstagram') }}"><b>Login </b></a></p>
+    <h3>Current User: wara.kab</h3>
+    <form action="/">
+         <b>User name:</b>
+         <input type="text" name="username" value="Write_instagramuser_name">
+  
+        <input class="button" type="submit" value="search user in instagram">
+   </form>
+
+ <div>
+        {% if "NoUser" in username %}
+		<h4>{{'No user:'}}{{username}}</h4>
+ 		
+    
+         {% elif username %}
+		<h4>{{'Got user:'}}{{username}}</h4>
+		<p><a href="{{ url_for('showdataset',username = username,show_media='show') }}" ><b>Show recent media details of: {{username}} </b></a></p>
+	    	
+         
+        {% endif %}
+ </div>
+{% endif %}
+    <div>
+	{% block logout%}{% endblock %}
+    </div>
+    
+<div id="show_table">
+{% block datasettable%}
+
+{% endblock %}
+</div>
+
+
+
+{% if content!='None' %}
+<table>
+    <thead><tr>
+        <th>MediaId</th>
+        <th>User Name</th>
+	<th>Url</th>
+        <th>totalcomments</th>
+	<th>likedusers</th>
+	<th>userid</th>
+	<th>all comments</th>
+	<th>caption</th>
+	
+        <th>totallike</th>
+	
+	<th>Location</th>
+    </tr>
+{% set len = content|length %}
+    </thead>
+<tbody>
+	{# using builtin filter http://jinja.pocoo.org/docs/2.9/templates/#builtin-filters... #} 
+	{%- for row in content|batch(10, '&nbsp;') %}
+  	<tr>
+  		{%- for column in row %}
+    		<td>{{ column }}</td>
+  		{%- endfor %}
+  	</tr>
+	{%- endfor %}
+
+</tbody>
+</table>
+{% endif %}
+
+<h3>Usage of each of the informations that we retrieve from the Instagram Public Fashionistas' Profile are given below:</h3>
+<table>
+	<thead>
+	<tr><th >Instagram Data</th><th>Method/Scope/Url</th><th>Usage</th></tr>
+	    
+	</thead>
+	<tbody>
+<tr><td>User Search</td>
+		<td><b>GET:</b>Get a list of users matching the query. <br><br><b>Scope:</b>
+The public_content scope is required.<br><br><b> URL:</b>https://api.instagram.com/v1/users/search?q=jack&access_token=ACCESS-TOKEN</td>
+		 <td>We perform user search to get the user identification that is required for the following scopes.
+
+		</td>
+
+	    </tr>
+	    <tr><td>Media or Image</td>
+		<td><b>GET:</b>Get the most recent media published by a user.<br><br><b>Scope:</b>
+The public_content scope is required if the user is not the owner of the access_token.<br><br><b> URL:</b>https://api.instagram.com/v1/users/{user-id}/media/recent/?access_token=ACCESS-TOKEN</td>
+		 <td>We perform image analysis for the purpose of styles’ and brands’ detection using deep learning (PhD research at KTH university).
+By analysing the selected sample of fashionistas’ public accounts, we get some information about the influencing styles and brands. The purpose is to test a deep convolutional neural network architecture (specialised architecture for image analysis) that tries to map clothing items inside Instagram images with items from online shopping websites.</td> </tr>
+<tr>
+<td>Image Caption</td>
+<td>Same as previous [Media or Image]</td>
+<td>We perform textual analysis on the image’s caption. Sometimes fashionsitas’ publish information about what they wear and write useful hashtags about the brands that they wear or the styles they have.</td>
+
+</tr>
+	    <tr>
+<td>Location</td>
+<td>Same as previous [Media or Image]</td>
+<td>
+In our research, we focus on Swedish fashionistas’ accounts, but we still need to know the location as the clothing items might be affected if the fashionista is publishing photos from an area in which the weather is better than her original country. This might affect our analysis as well.
+</td>
+
+</tr>
+
+<tr><td>All Comments of any media</td>
+<td><b>GET:</b>Get a list of recent comments on a media object.<br><br>
+<b>Scope:</b>The public_content scope is required for media that does not belong to the owner of the access_token. <br> </br>
+<b> URL:</b>https://api.instagram.com/v1/media/{media-id}/comments?access_token=ACCESS-TOKEN</td>
+<td>
+In our research, we perform textual analysis on both the image’s caption (text description below the image) and the comments received on each image. The purpose of such analysis is to retrieve all keywords that are useful for understanding which styles and brands are in the image. The text that we analyse can be very useful for us to correct the image classification output. If our architecture predicts that we have a jacket and a dress in the image, but the text is more focused on the jacket, we try to focus our analysis on the item of interest according to text.
+</td>
+
+</tr>
+	    <tr><td>All commented User's Information</td>
+<td>Same as previous [All Comments of any media]</td>
+<td>We try to detect the influence that fashionistas have on their followers, and for that we need the account names who frequently comment or like images on certain fashionistas accounts. This will help us to detect the frequency of interaction of followers with these accounts.</td>
+</tr>
+	    <tr>
+<td>All liked Users Information</td>
+<td><b>GET:</b>Get a list of users who have liked this media.
+ <br><br><b>Scope:</b>
+The public_content scope is required for media that does not belong to the owner of the access_token.<br><br><b> URL:</b>https://api.instagram.com/v1/media/{media-id}/likes?access_token=ACCESS-TOKEN
+<td>This point is very similar to the previous one. We try to detect the influence that fashionistas have on their followers, and by tracing how certain people continuously interact with certain fashionistas’ accounts, we can detect the influence level of these users. 
+</td>
+<td></td>
+</tr>
+
+	</tbody>
+</table>
+</body>
+</html>
+

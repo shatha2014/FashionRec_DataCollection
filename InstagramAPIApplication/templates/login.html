@@ -1,0 +1,55 @@
+{% extends "templates_view.html" %}
+
+{% block dataset %}
+<h4>{{'Loged in user:'}}{{current_user}}</h4>
+
+<p><a href="{{ url_for('login',current_user = current_user,show_media='show') }}" ><b>Show recent media details of: {{current_user}} </b></a></p>
+
+{% endblock %}
+
+
+{% block logout%}
+   {% if request.path == '/login' %}
+    <p><a href="{{ url_for('logout') }}" ><b>Logout from Instagram</b></a></p>
+    {% endif %}
+{% endblock %}
+<script>
+                function myClickFunction() {
+                    alert("log out");
+                }
+</script>
+
+{% block datasettable%}
+
+	{% if content!='None' and username and show_media%}
+	<table>
+	    <thead><tr>
+		<th>MediaId</th>
+		<th>User Name</th>
+		<th>Url</th>
+		<th>totalcomments</th>
+		<th>likedusers</th>
+		<th>userid</th>
+		<th>all comments</th>
+		<th>caption</th>
+	
+		<th>totallike</th>
+	
+		<th>Location</th>
+	    </tr>
+	{% set len = content|length %}
+	    </thead>
+	<tbody>
+		{# using builtin filter http://jinja.pocoo.org/docs/2.9/templates/#builtin-filters... #} 
+		{%- for row in content|batch(10, '&nbsp;') %}
+	  	<tr>
+	  		{%- for column in row %}
+	    		<td>{{ column }}</td>
+	  		{%- endfor %}
+	  	</tr>
+		{%- endfor %}
+
+	</tbody>
+	</table>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <h1>Description of Fashion Dataset Retriever Service</h1>
+    <p><b>Last updated:26th October,2017</b></p>
+<p>
+		<strong>
+			Introduction:
+
+		</strong>
+	</p>
+    <p>
+    	Fashion Dataset Retriever operates as a server side service and provides a dataset which includes: media, user’s basic information and media information such as likes, comments, caption, and location of fashionistas’ public users for research purpose. The purpose is to perform visual and textual analysis research using deep learning.This public content will be analyzed by a researcher at KTH Royal Institute of Technology, Sweden or other researchers who will request the dataset for research purposes only.
+
+
+    </p>
+	
+	<p>
+		<strong>
+			Usage of Service:
+
+		</strong>
+	</p>
+
+    <p >
+	The collected dataset will be used to analyze a sample of Fashionistas’ instagram media and get understanding about their favourite fashion style (from their shared public media, caption text and received comments) and brands (from hashtags in the media caption).  Then we plan to use this information (influencing fashion styles and brands) to develop a recommendation algorithm of clothes and test its efficiency in predicting similar styles as recommendations. Also recommend similar clothes( with similar styles and brands) from their followed fashion models accounts. For this purpose ‘Fashion Dataset Retriever’ service will collect public fashionistas’ data (basic information, medias, followers, captions, locations, comments and likes’ information) and help the intelligent recommendation to work with more practical data. The recommendation idea using the instagram dataset is proposed in a paper ‘Deep Cross-Domain Fashion Recommendation’ by a Phd student, Shatha Jaradat at KTH at the ACM Recommender Systems 2017 Doctoral Symposium <sup>[1]</sup>.
+<div>[1] Deep Cross-Domain Fashion Recommendation. Shatha Jaradat. Doctoral Symposium, 2017 ACM International Conference on Recommender Systems (RecSys 2017), Como, Italy, 27 - 31 August, 2017.<div/>
+
+
+	</p>
+
+	<p >
+		<strong>
+			Permission Scope:
+
+		</strong>
+	</p>
+
+    <p>
+	According to the usage of the dataset , this service falls in the second permission scope  that helps the brand and advertisers understand their audience and also help to recommend as user’s fashion choice. The scope of the dataset gathering service  is basic and public_content.
+
+<p><b>Search user by Name:</b> Get a list of users matching the query. This task require the scope of public_content.</p>
+
+<p><b>Get recent Media:</b> Get the most recent media published by a user.The public_content scope is required as the user is not the owner of the access_token. </p>
+<p><b>Media:</b> Get information about a media object. The public_content permission scope is required to get a media that does not belong to the owner of the access_token.</p>
+<p><b>Comments:</b>Get a list of recent comments on a media object.The public_content scope is required for media that does not belong to the owner of the access_token.</p>
+<p><b>Likes:</b>Get a list of users who have liked this media.The public_content scope is required for media that does not belong to the owner of the access_token.</p>
+
+According to the usage of the dataset , this service falls in the second permission scope  that helps the brand and advertisers understand their audience and also help to recommend as user’s fashion choice. The scope of the dataset gathering service  is basic and public_content.
+
+	</p>
+    
+
+    <p>If you have any questions about this service, please contact us on <a href=shatha@kth.se>shatha@kth.se</a> and <a href=ummul@kth.se>ummul@kth.se</a>.
+
+
+	</p>
+    
+    
+
+  </body>
+</html>

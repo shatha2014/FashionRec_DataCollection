@@ -1,0 +1,35 @@
+
+<html>
+<body>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<h1>
+Instagram Script
+</h1>
+<button class = "button">
+Run Instagram Script and Show Result
+</button>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Location</th>
+         <th>Caption</th>
+        <th>like count</th>
+        <th>Who liked</th>
+        <th>Comment count</th>
+        <th>Comment All</th>
+        <th>Media Link</th>
+
+    </tr>
+
+    {% for row in range(totalrow) %}
+        <tr>
+            {% for column in range(9) %}
+            <td> {{ content[row][column] }} </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
+
