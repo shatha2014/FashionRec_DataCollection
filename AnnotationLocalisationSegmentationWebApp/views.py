@@ -45,7 +45,7 @@ aws_secret_access_key = 'M7Rt12tuDdCeZoogwwqDvgJe86w39/jb7feaaUTS'
 #end temporary by ShathaJ
 
 
-#### BEGIN database info for annotation-webapp 
+#### BEGIN database info for annotation-webapp
 liketkitCollection = annotation_app.config['INSTAGRAM_LIKETKIT_USER_COLLECTION']
 swedishCollection = annotation_app.config['INSTAGRAM_SWEDISH_USER_COLLECTION']
 annotatorAssignedIdCollection = annotation_app.config['ANNOTATE_DETAIL_IAMGEID_USER_COLLECTION']
@@ -54,18 +54,18 @@ textAnalysisDataCollection = annotation_app.config['IMAGEID_TEXT_ANALYSIS_DATA_C
 annotatorassignedimagelist = annotation_app.config['ANNOTATOR_IMAGEID_ASSIGNED_COLLECTION']
 #### END database info for annotation-webapp
 
-#### BEGIN database info for localisation-segmentation 
+#### BEGIN database info for localisation-segmentation
 localiseddata = annotation_app.config['LOCALISATION_DATA']
 segmenteddata = annotation_app.config['SEGMENTATION_DATA']
 imagesegdata = annotation_app.config['IMG_BIN_SEG']
 imagelocdata = annotation_app.config['IMG_BIN_LOC']
-#### END database info for localisation-segmentation 
+#### END database info for localisation-segmentation
 
 @annotation_app.template_filter()
 def str_to_dict_object(value):
     return ast.literal_eval(value)
 
-#### BEGIN[appRoute] application home page 
+#### BEGIN[appRoute] application home page
 #@annotation_app.route('/')
 @annotation_app.route('/', methods=['GET','POST'])
 def login():
@@ -133,7 +133,7 @@ def login():
     if request.method == 'GET':
         print 'GET in [login] '.format()
         return render_template('login.html', title='Webapp login', form=form)
-#### END[appRoute] application home page 
+#### END[appRoute] application home page
 
 
 #### BEGIN[appRoute] applications all User profile page
@@ -163,7 +163,7 @@ def allUserFolder(annotator_username):
         name_propic_json = json.load(jsonFile)
     # 3. update json file according to different annotator image annotated data	95
     annottaion_complete_boolean = check_annotation_completion_for_each_fashionista(name_propic_json,annotator_username,option)
-   
+
     return render_template('allUserFolder.html', annotator_username = annotator_username,name_propic_json = annottaion_complete_boolean, option = option)
 #### END[appRoute] applications all User profile page
 
@@ -196,7 +196,7 @@ def singleUserFolder(insta_username):
             # id_annotated_info_dict_list = annotatorAssignedIdCollectionProcessFunction(annotator_username,insta_username)
             id_annotated_info_dict_list = annotatorAssignedIdCollectionProcessFunctionForBaseBinarydataAndAnnotatedInfo(
                 annotator_username, insta_username)
-            
+
             return render_template('singleUserFolder.html', insta_username=insta_username,
                                    annotator_username=annotator_username,
                                    id_annotated_info_dict_list=id_annotated_info_dict_list, option = option)
@@ -238,7 +238,7 @@ def fashionistasImageAnnotation():
             return Response(json.dumps({"redirect":False,"success": delete_status}),status=200, mimetype= 'application/json')
 
 
-        
+
 
         ####COND2:if the POST request is  Finalize Annotation
         elif(finalize_annotation_check):
@@ -250,7 +250,7 @@ def fashionistasImageAnnotation():
              { "_id" : ObjectId("5a62121b25664e0924cc338d"),
              "fashionistausername" : "cellajaneblog",
              "annotatorusername" : "ann7",
-             "imageinfo" : { "fashionistausername" : "cellajaneblog", 
+             "imageinfo" : { "fashionistausername" : "cellajaneblog",
              "annotateddatajson" : null,
               "annotated" : false ,
               "styles":"chich style" },
@@ -265,7 +265,7 @@ def fashionistasImageAnnotation():
                                         "success": True}), mimetype='application/json')
 	##COND3:if the POST request is  'NonFashion item'
         elif(non_fashion_item):
-           
+
             non_fashion_image_db =  annotatorAssignedIdCollection.find({"$and":[{"annotatorusername":annotator_username},{"fashionistausername":annotated_insta_username},{"imageid":annotated_image_id}]})
             annotatorAssignedIdCollection.update({"$and":[{"annotatorusername":annotator_username},{"fashionistausername":annotated_insta_username},{"imageid":annotated_image_id}]},{"$set":{"imageinfo.annotated":True,"imageinfo.imageid":annotated_image_id,"imageinfo.fashionistausername":annotated_insta_username,"imageinfo.annotateddatajson":[{"ItemCategory":"Non Fashion  item"}]}})
 
@@ -628,7 +628,7 @@ def fashionistasImageAnnotationMturkWorker():
              { "_id" : ObjectId("5a62121b25664e0924cc338d"),
              "fashionistausername" : "cellajaneblog",
              "annotatorusername" : "ann7",
-             "imageinfo" : { "fashionistausername" : "cellajaneblog", 
+             "imageinfo" : { "fashionistausername" : "cellajaneblog",
              "annotateddatajson" : null,
               "annotated" : false ,
               "styles":"chich style" },
@@ -1002,7 +1002,7 @@ def annotatorAssignedIdCollectionProcessFunction(annotatorusername,fashionistaus
             annotator_assigned_fashionista_list.add(insta_user)
         return annotator_assigned_fashionista_list
 
-#### BEGIN function to create dictionary list for  Single Users Gallery View 
+#### BEGIN function to create dictionary list for  Single Users Gallery View
 def annotatorAssignedIdCollectionProcessFunctionForBaseBinarydataAndAnnotatedInfo(annotatorusername,fashionistausername):
     '''function to retrieve data for an image  from  collection "annotateddatadetailwithuser".Data id stored in the structure:
      { "_id" : ObjectId("5a62121b25664e0924cc338d"),
@@ -1066,7 +1066,7 @@ def annotatorAssignedIdCollectionProcessFunctionForBaseBinarydataAndAnnotatedInf
             insta_user = data["fashionistausername"]
             annotator_assigned_fashionista_list.add(insta_user)
         return annotator_assigned_fashionista_list
-#### END function to create dictionary list for  Single Users Gallery View 
+#### END function to create dictionary list for  Single Users Gallery View
 
 
 #### BEGIN function to update finalize complete info for a image  and update style
@@ -1142,12 +1142,12 @@ def saveItemDataToannotatorAssignedIdCollection(annotatorusername,fashionistause
            annotated_saved_json_data = i["imageinfo"]["annotateddatajson"]
 
     #print 'GET DATA FROM DB > {} NEW DATA > {} '.format(annotated_saved_json_data, new_annotated_data)
-    '''"annotateddatajson" : [ { "ItemSubCategory" : "cocktail", 
-                                "ItemCategory" : "dresses", 
-                                "FinalizeAnnotatedAttributes" : { "Lining" : [ ], 
+    '''"annotateddatajson" : [ { "ItemSubCategory" : "cocktail",
+                                "ItemCategory" : "dresses",
+                                "FinalizeAnnotatedAttributes" : { "Lining" : [ ],
                                 "Brand" : [ ], "Material" : [ "cord" ],
                                  "Collection" : [ ], "trouserrise" : [ ],
-                                  "Length" : [ "Thigh-Length" ], "Pattern" : [ "colourgradient" ], 
+                                  "Length" : [ "Thigh-Length" ], "Pattern" : [ "colourgradient" ],
                                   "Collartype" : [ "roundneck" ], "Colour" : [ "purple" ], "Occasion" : [ "party" ] } } ]'''
     # If there exist some saved item category in database then retrieve the item category list and and check the existance of new item category
     # if the new item category type already added then do not add the new one
@@ -1207,18 +1207,18 @@ def deleteAnSavedItemCategoryFromannotatorAssignedIdCollection(annotatorusername
                 image_category_info= item.get("ItemCategory")
                 image_sub_category_info = item.get("ItemSubCategory")
                 image_finalize_annotated_data_info = item.get("FinalizeAnnotatedAttributes")
-                '''Data structure get from database: "annotateddatajson" : [ { "ItemSubCategory" : "totebags", 
+                '''Data structure get from database: "annotateddatajson" : [ { "ItemSubCategory" : "totebags",
                                             "ItemCategory" : "bags",
                                             "FinalizeAnnotatedAttributes" : { "Pattern" : [ ], "Brand" : [ "Abro" ], "Material" : [ "crocheted" ], "otherdetails" : "", "Collection" : [ "spring-summer" ], "Occasion" : [ "evening" ], "Colour" : [ "black" ] } },
                                             { "ItemSubCategory" : "sunglasses",
-                                             "ItemCategory" : "accessories",    
+                                             "ItemCategory" : "accessories",
                                              "FinalizeAnnotatedAttributes" : { "Brand" : [ "abercrombieandfitch" ], "Material" : [ "crocheted" ], "otherdetails" : "", "Collection" : [ "spring-summer" ], "Occasion" : [ "leisure" ], "Colour" : [ "black" ] } },
                                               { "ItemSubCategory" : "cocktail",
-                                               "ItemCategory" : "dresses", 
+                                               "ItemCategory" : "dresses",
                                                "FinalizeAnnotatedAttributes" : { "Pattern" : [ "burnout" ], "Brand" : [ "abercrombieandfitch" ], "Material" : [ "cashmere" ], "otherdetails" : "", "Collection" : [ "autumn-winter" ], "Length" : [ "Calf-Length" ], "Collartype" : [ "backless" ], "Occasion" : [ "evening" ], "Colour" : [ "beige" ] } } ]'''
                 #item_category_list_db.append(image_category_info)
                 if image_category_info == itemCtegoryToDelete:
-                    
+
                     break
             #print len(annotated_saved_json_data)
             annotated_saved_json_data[:] = [d for d in annotated_saved_json_data if d.get("ItemCategory") != itemCtegoryToDelete]
@@ -1375,12 +1375,12 @@ def check_annotation_completion_for_each_fashionista(name_propic_json,annotator_
 		            if(all(item for item in all_annotated_info_db_list)):
 		                update_annottaed_info_dict['annotation_complete']= True
 		if(option =='2'):
-		    
+
 		    for each_annotated_data in localisationdata:
 			annotated_info_db = each_annotated_data['localisedFlag']
 			all_annotated_info_db_list.append(annotated_info_db)
-		    
-		    
+
+
 		    if not all_annotated_info_db_list:
                         update_annottaed_info_dict['annotation_complete']= False
 		    else:
@@ -1388,8 +1388,8 @@ def check_annotation_completion_for_each_fashionista(name_propic_json,annotator_
 			    if(all(item for item in all_annotated_info_db_list)):
 		                    update_annottaed_info_dict['annotation_complete']= True
 
-		    
-			
+
+
 		if(option =='3'):
 		   for each_annotated_data in segmentationdata:
 			annotated_info_db = each_annotated_data['segmentedFlag']
@@ -1401,9 +1401,9 @@ def check_annotation_completion_for_each_fashionista(name_propic_json,annotator_
 			if (annotator_saved_instauser_data.count() == len(all_annotated_info_db_list)):
 			    if(all(item for item in all_annotated_info_db_list)):
 		                    update_annottaed_info_dict['annotation_complete']= True
-                    
+
             all_user_update_dict_list.append(update_annottaed_info_dict)
-    
+
     return all_user_update_dict_list
 #### END function to update the annottaed completion information for Fashionista
 
@@ -1423,20 +1423,20 @@ def retrun_text_data_for_id(imageid):
         print 'NO TEXT_ANALYSIS DATA '
         text_data['NoData'] = 'None'
     return text_data
-#### END function to get text-data from database given a image id 
+#### END function to get text-data from database given a image id
 
-#### BEGIN function to get imagebinaryfrom database given a image id 
+#### BEGIN function to get imagebinaryfrom database given a image id
 def getbinarydataforthisimage(imageid):
     imagebinary = imagebase64binarycollection.find({"_id": imageid})
     imagebinaryData = None
     if (imagebinary.count() > 0):
         for item in imagebinary:
             imagebinaryData = item.get("base64binary")
-            
+
     return imagebinaryData
 #### END function to get imagebinaryfrom database given a image id
 
-####function te retrun json data given a file name
+####function to retrun json data given a file name
 def return_json_data(filename):
     json_data = []
     if os.path.isfile(filename) :
@@ -1445,7 +1445,7 @@ def return_json_data(filename):
     return json_data
 
 
-# Localisation Segmentation start
+####BEGIN Route for Main page containing options- Annotation ,Localisation and Segmentation ####
 @annotation_app.route("/mainpage", methods=['GET', 'POST'])
 @login_required
 def mainpage():
@@ -1464,9 +1464,9 @@ def mainpage():
 
 
         return render_template('mainpage.html', annotator_username=annotator_username)
+####END Route for Main page containing options- Annotation ,Localisation and Segmentation ####
 
-
-#Function to get saved localisations from DB
+###BEGIN Function to retrieve Localised images
 def getLocBinary(imageid,annotator_username,insta_username):
     imagebinary = imagelocdata.find({"id":imageid,"annotator_username":annotator_username,"insta_username":insta_username})
     imagebinaryData = None
@@ -1474,9 +1474,9 @@ def getLocBinary(imageid,annotator_username,insta_username):
         for item in imagebinary:
             imagebinaryData = item.get("base64binary")
     return imagebinaryData
+###END Function to retrieve Localised images
 
-
-#Function to open localisation page
+####BEGIN Route to perform localisation ####
 @annotation_app.route("/localisation", methods=['GET', 'POST'])
 @login_required
 def localisation():
@@ -1710,9 +1710,9 @@ def localisation():
         imagebinarydatas = getLocBinary(image_id, annotator_username, insta_username)
 
         return render_template('localisation.html',annotator_username=annotator_username,image_url= current_url, uri = uri, width= width,height= height,insta_username=insta_username,id=image_id,text_data=text_data,liketkit = liketkit,imagebinarydata = imagebinarydata,imagebinarydatas=imagebinarydatas,option = option)
+####END Route to perform localisation ####
 
-
-#Function to render segmentation
+####BEGIN Route for rendering the segmentation platform where segmentation is performed ####
 @annotation_app.route("/segmentation", methods=['GET', 'POST'])
 @login_required
 def segmentation():
@@ -1780,9 +1780,9 @@ def segmentation():
 
 
         return render_template('segmentation.html',id=image_id,annotator_username=annotator_username,insta_username=insta_username,option =  option)
+####END Route for rendering the segmentation platform where segmentation is performed ####
 
-
-#Function to get saved segmentations from DB
+###Function  to retrieve segmented image from Database
 def getsegbinary(imageid,annotator_username,insta_username):
     imagebinary = imagesegdata.find({"id":imageid,"annotator_username":annotator_username,"insta_username":insta_username})
     imagebinaryData = None
@@ -1791,6 +1791,7 @@ def getsegbinary(imageid,annotator_username,insta_username):
             imagebinaryData = item.get("base64binary")
     return imagebinaryData
 
+####BEGIN Route for rendering initial segmentation webpage ####
 @annotation_app.route("/seg", methods=['GET', 'POST'])
 @login_required
 def seg():
@@ -1918,26 +1919,28 @@ def seg():
         imagebinarydatas = getsegbinary(image_id, annotator_username, insta_username)
 
         return render_template('seg.html',annotator_username=annotator_username,image_url= current_url, uri = uri,insta_username=insta_username,id=image_id,text_data=text_data,liketkit = liketkit,imagebinarydata = imagebinarydata, imagebinarydatas=imagebinarydatas,option = option)
+####END Route for rendering initial segmentation webpage ####
 
 
-
-#Instructions
+####BEGIN Route for Localisation page instructions ####
 @annotation_app.route('/localisationinstructions', methods=['GET'])
 def localisationinstructions():
     annotator_username = request.args.get("annotator_username")
     insta_username = request.args.get("insta_username")
 
     return render_template('localisationinstructions.html', annotator_username = annotator_username,insta_username = insta_username)
+####END Route for Localisation page instructions ####
 
-
+####BEGIN Route for Segmentation page instructions ####
 @annotation_app.route('/segmentationinstructions', methods=['GET'])
 def segmentationinstructions():
     annotator_username = request.args.get("annotator_username")
     insta_username = request.args.get("insta_username")
 
     return render_template('segmentationinstructions.html', annotator_username = annotator_username,insta_username = insta_username)
+####END Route for Segmentation page instructions ####
 
-#url to image function copied
+#### Function to  convert image to URL (Not used at the moment, useful for future)
 def url_to_image(url):
 	# download the image, convert it to a NumPy array, and then read
 	# it into OpenCV format
@@ -1947,12 +1950,13 @@ def url_to_image(url):
 
 	return image
 
+#### BEGIN Route logout ####
 @annotation_app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
+#### END Route logout ####
 
 if __name__ == "__main__":
 
