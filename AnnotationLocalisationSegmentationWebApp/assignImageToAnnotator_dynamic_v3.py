@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError,CursorNotFound
 from flask import request
 import random,json,os
-from PIL import Image
+import Image
 from bson.binary import Binary
 import base64,requests
 import codecs
