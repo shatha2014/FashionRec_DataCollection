@@ -78,7 +78,7 @@ python views.py
 3. To see all records
 ```bash
     db.segmenteddata.find().pretty()
-   ```
+```
 4. Search based on specific fashionista name
 ```bash
     db.segmenteddata.find({"insta_username" : "jessi_afshin"}).pretty()
