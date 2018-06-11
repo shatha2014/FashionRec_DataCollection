@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError,CursorNotFound
 from flask import request
 import random,json,os
-import Image
+
 from bson.binary import Binary
 import base64,requests
 import codecs
@@ -25,7 +25,6 @@ liketkitCollection = annotation_app.config['INSTAGRAM_LIKETKIT_USER_COLLECTION']
 swedishCollection = annotation_app.config['INSTAGRAM_SWEDISH_USER_COLLECTION']
 allinstagramuserCollection = annotation_app.config['INSTAGRAM_ALL_USER_ID_COLLECTION']
 commonCount = annotation_app.config['COMMON_COUNT']
-ALL_fashionistalist = annotation_app.config['ALL_FASHIONISTA_LIST']
 
 
 
@@ -244,10 +243,22 @@ def main():
         assign_count = None
         fashionista_name=None
 
+
+        #create list for all fahsionista
+        all_fashionistalist = []
+        #read the created json file and assign image to annottaor
+        cwd = os.getcwd()
+        filename = os.path.join(str(cwd)+"/annotation_webapp/static/appdata","username_profilepicurl_annotationcomplete.json")
+        json_data1 = return_json_data(filename)
+        for each_user in json_data1:
+            all_fashionistalist.append(each_user.get("username"))
+
+
+
         annotator_to_assign = raw_input("Enter the correct annotator name you want to assign image?")
         if(find_annotator(annotator_to_assign)):
             fashionista_name = raw_input("Enter fashionista name to assign image to -  "+ annotator_to_assign)
-            if (fashionista_name in ALL_fashionistalist):
+            if (fashionista_name in all_fashionistalist):
                 pass
             else:
                 fashionista_name = raw_input("Enter correct fashionista name to assign image to  -  "+ annotator_to_assign)
