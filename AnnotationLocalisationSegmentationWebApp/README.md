@@ -5,11 +5,11 @@ This is a flask-based web application that is used to annotate a fashion relate 
 
 Modules 
 -----
-1. ./node_modules - contains 3 npm modules - ./base64-arraybuffer, ./css-line-break and ./html2canvas. They are used for localisation and segmentation to capture annotated images and encoding/decoding to base64 binary. 
+1. *./node_modules* - contains 3 npm modules - ./base64-arraybuffer, ./css-line-break and ./html2canvas. They are used for localisation and segmentation to capture annotated images and encoding/decoding to base64 binary. 
 
-2. ./static- contains all the staic data files like- appdata, css, bootstrap, css etc.
-3. ./templates - contains all the front-end view in html.
-4. 
+2. *./static* - contains all the staic data files like- appdata, css, bootstrap, css etc.
+3. *./templates* - contains all the front-end view in html.
+ 
 
 Requirements 
 -----
