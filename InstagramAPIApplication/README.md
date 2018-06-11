@@ -30,6 +30,8 @@ mongod
 ```bash
 python datasetcrawler.py
 ```
+
+Usage
 -----
 
 Example Command:
