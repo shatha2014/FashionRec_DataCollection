@@ -8,7 +8,7 @@ Requirements
 -----
 1. Create virtual environment
 ```bash
-$ virtualenv venv
+$ virtualenv venv-instascraper
 ```
 
 2. Activate virtual environment 
