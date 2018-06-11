@@ -5,7 +5,7 @@ ROOT_DIR=$(pwd)
 
 # Activate clean virtualenv.
 
-VENV=.venv-zalando
+VENV=venv-zalando
 if [ ! -d $VENV ]; then
 virtualenv $VENV
 fi
@@ -23,8 +23,5 @@ pip install -r requirements.txt
 cd $ROOT_DIR
 
 #<write the python command to execute>
-#python scrape_item_count.py
-#python zalando_scrap_19March.py
-#python scrap.py
-#python zalandoScraper_24March.py
+
 python zalandoScraper_v3_download_all.py
