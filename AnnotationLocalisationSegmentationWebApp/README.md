@@ -88,7 +88,10 @@ python views.py
     db.segmenteddata.find({"annotator_username" : "mallu"}).pretty()
 ```
 
-
+**Instructions for Coffee script compilation for localisation**
+Compile the coffee script to get a javascript.coffee -c localisation.coffee
+Or, go to http://coffeescript.org/ and compile the coffeescript.
+<script src="localisation.js" type="text/javascript"></script>
 
 
 **DB command for Localisation:**

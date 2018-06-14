@@ -186,7 +186,7 @@ Annotator.prototype.export = function () {
   // Code  to fetch pixel label pairs.
 
       var arrayoflabels = [
-            [], [], [], [],
+            [], [], [], [],[], [],
             [], [], [], [],
             [], [], [], [],
             [], [], [], [],
@@ -234,10 +234,10 @@ Annotator.prototype.export = function () {
         var can = this.layers.annotation.canvas;
         var saveimage = can.toDataURL('image/jpg',1);
 
-     var segmentedDataPixels = {Blouse_Tunics: arrayoflabels[1], Coats: arrayoflabels[2],Dresses:arrayoflabels[3],Jeans: arrayoflabels[4],Jackets:arrayoflabels[5],
-          Jumper_Cardigans: arrayoflabels[6], Skirts: arrayoflabels[7],Tights_Socks:arrayoflabels[8],Tops_Tshirts:arrayoflabels[9],Trousers_Shorts: arrayoflabels[10],
-          Shoes: arrayoflabels[11],Bags: arrayoflabels[12],Belts: arrayoflabels[13],Gloves: arrayoflabels[14],Hats_Cap:arrayoflabels[15],Jewellary_Watch:arrayoflabels[16],
-          Purses: arrayoflabels[17],Scarves_Shawls: arrayoflabels[18],Sunglasses: arrayoflabels[19]};
+     var segmentedDataPixels = {Blouse_Tunics: arrayoflabels[3], Coats: arrayoflabels[4],Dresses:arrayoflabels[5],Jeans: arrayoflabels[6],Jackets:arrayoflabels[7],
+         Jumper_Cardigans: arrayoflabels[8], Skirts: arrayoflabels[9],Tights_Socks:arrayoflabels[10],Tops_Tshirts:arrayoflabels[11],Trousers_Shorts: arrayoflabels[12],
+         Shoes: arrayoflabels[13],Bags: arrayoflabels[14],Belts: arrayoflabels[15],Gloves: arrayoflabels[16],Hats_Cap:arrayoflabels[17],Jewellary_Watch:arrayoflabels[18],
+         Purses: arrayoflabels[19],Scarves_Shawls: arrayoflabels[20],Sunglasses: arrayoflabels[21]};
 
       //var allRGB = colorsRGB //which we are not sending
 
