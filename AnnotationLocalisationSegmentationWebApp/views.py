@@ -1694,9 +1694,9 @@ def localisation():
                     idofthis = i['id']
 
         #resize
-        basewidth = 450
+        basewidth = 600
         img = Image.open(uri)
-        hsize = 600
+        hsize = 1000
         img = img.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
         for i in image_id:
 
