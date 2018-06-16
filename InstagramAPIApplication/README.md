@@ -2,50 +2,31 @@
 Instagram API Application
 =================
 
-Instagram API application is a flask based web-solution written in python and provides information related to the usage of instgaram data for cross-domain recommendation system. It also includes the privacy policy and usage of the instagram data. Besides this, instagram login option gives each instagram user to 
+Instagram API application is a flask based web-solution written in python. The main purpose of this application is to get permission for Instagram API access. Because, Instagram data is required for a cross-domain recommendation system to recognize fashion style using deep learning and recommend fashion cloths. To fulfill the Instagram API review requests condition- privacy policy for data usage and sharing and also the Instagram 'login' experience using a Instagram username and its password is added.
+The 'login' option using the Instagram  username and its password ensures that the developed application asks the users permission for basic information data access via API.
 
-
-Requirements 
+Requirements
 -----
-1. Create virtual environment
-```bash
-$ virtualenv venv
-```
-
-2. Activate virtual environment 
-```bash
-$ source venv/bin/activate
-```
-
-3. Install python packages in virtualenv
-
-```bash
-pip install -r requirements.txt
-``` 
-4. Start MongoDB(version 2.6.12) using 'mongod' command
-```bash
-mongod
-```
-5. Run python script 'datasetcrawler.py' and the web-aplication will be open in the browser.
-```bash
-python datasetcrawler.py
-```
+1. Python version 2.7
 
 Usage
 -----
+1. Open the terminal and browse to the folder containing 'run.sh' file and execute below command.
+```bash
+$ bash run.sh
+```
+2. After executing the command, the url of the application server will appear below. Open the url in any browser and login with any valid Instagram username and password. After successful login, the user will be prompt a option to allow the access of the application 'Fashion Dataset Retriever' for basic informations. Then allow access for the given user.
 
-Example Command:
+3.  Follow the instruction inside the module './InstagramScraperAPIVersion' to crawl the basic data and media for the given user. 
+
 ------
 
 
-```bash
-python datasetcrawler.py
-
-```
 
 
 
- 
+
+
 
 License
 -------
