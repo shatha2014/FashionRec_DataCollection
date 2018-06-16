@@ -2,12 +2,12 @@ Overview
 ==========================
 
 
-Modules 
+Modules
 -----
 
 1. **./Annotation-Localisation-Segmentattion Web Application** - contains the flask based image annotation,localisation and segmentation web-solution.
 
-2. **./InstagramAPIApplication** - contains Instagram API application to get permission for Instagram API  access.
+2. **./InstagramAPIApplication** - contains Instagram API application to get permission for Instagram API  access. Inside this module 'InstagramScraperAPIVersion' is reside and used to crawl Instagram users basic information upon athentication.
 
 3. **./InstagramScraper** - contains i a command-line application written in Python that scrapes and downloads an instagram user's photos and videos.
 
