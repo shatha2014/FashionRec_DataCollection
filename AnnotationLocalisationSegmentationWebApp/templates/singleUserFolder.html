@@ -51,9 +51,18 @@
             {% for k in item.keys() %}
                 {% set id = k %}
                 {# set url = item[id]["url"]#}
-                {% set binary_image_base64 = item[id]["imagebinary"] %}
-                {% set image_type = 'data:image/jpg;base64,' %}
-                {% set final_image = image_type + binary_image_base64 %}
+                {% if 'imagebinary' in item[id] %}
+			{% set binary_image_base64 = item[id]["imagebinary"] %}
+                	{% set image_type = 'data:image/jpg;base64,' %}
+                	{% set final_image = image_type + binary_image_base64 %}
+  	
+		
+                {# set binary_image_base64 = item[id]["imagebinary"] #}
+                {# set image_type = 'data:image/jpg;base64,' #}
+                {# set final_image = image_type + binary_image_base64 #}
+		{% else %}
+		{% set no_image = True %}
+		{% endif %}
 
                 <!-- LOOP for all user and  -->
                   <div class="col-md-3 ">
@@ -72,8 +81,12 @@
                               <div class ="a">
 
                                     <!-- <img src={{url}} id = "idimageurl" > -->
-                                   <img src={{final_image}} id = "idimageurl" >
-
+                                   {% if  no_image  %}
+                                        <img src="/static/appdata/default-placeholder.png" id = "idimageurl"   >
+				   {% else %}
+				 	<img src={{final_image}} id = "idimageurl"   >
+					{% set no_image = True %}
+				   {% endif %}
 
                                 {% if anndata %}
                                   {% if annotated_count.append('1') %}{% endif %}
@@ -99,8 +112,12 @@
                               <div class ="a">
 
                                     <!-- <img src={{url}} id = "idimageurl" > -->
-                                   <img src={{final_image}} id = "idimageurl" >
-
+                                   {% if  no_image  %}
+                                        <img src="/static/appdata/default-placeholder.png" id = "idimageurl"   >
+				   {% else %}
+				 	<img src={{final_image}} id = "idimageurl"   >
+					{% set no_image = True %}
+				   {% endif %}
 
                                 {% if anndata %}
                                   {% if annotated_count.append('1') %}{% endif %}
@@ -125,8 +142,12 @@
                               <div class ="a">
 
                                     <!-- <img src={{url}} id = "idimageurl" > -->
-                                   <img src={{final_image}} id = "idimageurl" >
-
+                                   {% if  no_image  %}
+                                        <img src="/static/appdata/default-placeholder.png" id = "idimageurl"   >
+				   {% else %}
+				 	<img src={{final_image}} id = "idimageurl"   >
+					{% set no_image = True %}
+				   {% endif %}
 
                                 {% if anndata %}
                                   {% if annotated_count.append('1') %}{% endif %}

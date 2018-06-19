@@ -25,6 +25,7 @@ liketkitCollection = annotation_app.config['INSTAGRAM_LIKETKIT_USER_COLLECTION']
 swedishCollection = annotation_app.config['INSTAGRAM_SWEDISH_USER_COLLECTION']
 allinstagramuserCollection = annotation_app.config['INSTAGRAM_ALL_USER_ID_COLLECTION']
 commonCount = annotation_app.config['COMMON_COUNT']
+ALL_fashionistalist = annotation_app.config['ALL_FASHIONISTA_LIST']
 
 
 
@@ -73,7 +74,7 @@ def save_imageid_list_in_json(fashionistaName, userDataCursor):
     a_list = []
 
     cwd = os.getcwd()
-    filename = os.path.join(str(cwd)+"/annotation_webapp/static/appdata","all_fashionistauser_imageidlist_data.json")
+    filename = os.path.join(str(cwd)+"/static/appdata","all_fashionistauser_imageidlist_data.json")
     json_fashionistauser_list = []
     json_fashionistauser_set = set()
     json_data = return_json_data(filename)
@@ -85,7 +86,7 @@ def save_imageid_list_in_json(fashionistaName, userDataCursor):
         json_fashionistauser_set = set(json_fashionistauser_list)
 
     if(fashionistaName not in json_fashionistauser_set):
-        print " ADD "
+        #print " ADD "
         imageid_list = get_imageid_list_from_cursor(userDataCursor)
         usernaem_imageid_list_dict = {}
         usernaem_imageid_list_dict["fashionistaUsername"] = fashionistaName
@@ -166,7 +167,7 @@ def get_unique_imageidlist(imageList_in_DB):
         id_list.append(data["imageid"])
 
     id_set = set(id_list)
-    print id_set
+    #print id_set
     return id_set
 def create_assignment_images_3(id_list,annotator_list,commonCount,instaUserName,annotator_image_assign_collection,annotator,assign_count):
     """ Version test For each instagramuser  assign first 100 images to each annotator such that each image is assigned to atleast five annotators.
@@ -189,7 +190,7 @@ def create_assignment_images_3(id_list,annotator_list,commonCount,instaUserName,
             #4. read random 5 annotators from the list of all annotators
             #rand_items = random.sample(annotator_list, commonCount)
             rand_items = get_five_annottaor_list_one_annotator_fixed(annotator_list,commonCount,annotator)
-            print rand_items
+            #print rand_items
             #5. for each of the annotator in the random annotator selector list assing the same imageid in 'imageID' variable
             for ann_index in range(0,len(rand_items)):
                 imageList = []
@@ -210,12 +211,12 @@ def create_assignment_images_3(id_list,annotator_list,commonCount,instaUserName,
                     for each_item in get_annotator_assign_imageidlist_cursor:
                         imageList_in_DB = each_item.get("imageList")
 
-                        print 'IIIIIIIiiiiii{}'.format(imageList_in_DB)
+                        #print 'IIIIIIIiiiiii{}'.format(imageList_in_DB)
                         id_set = get_unique_imageidlist(imageList_in_DB)
                         if(id not in id_set):
                             imageList_in_DB.append(user_id_dict)
                             annotator_image_assign_collection.update({"_id":annotator_name},{"$set":{"imageList":imageList_in_DB}})
-                            print 'update id: {} For annotator: {} to :{}'.format(imageID,annotator_name,len(imageList_in_DB))
+                            #print 'update id: {} For annotator: {} to :{}'.format(imageID,annotator_name,len(imageList_in_DB))
                         else:
                             pass
                 elif(cursor_count == 0):
@@ -244,21 +245,12 @@ def main():
         fashionista_name=None
 
 
-        #create list for all fahsionista
-        all_fashionistalist = []
-        #read the created json file and assign image to annottaor
-        cwd = os.getcwd()
-        filename = os.path.join(str(cwd)+"/annotation_webapp/static/appdata","username_profilepicurl_annotationcomplete.json")
-        json_data1 = return_json_data(filename)
-        for each_user in json_data1:
-            all_fashionistalist.append(each_user.get("username"))
-
-
+        
 
         annotator_to_assign = raw_input("Enter the correct annotator name you want to assign image?")
         if(find_annotator(annotator_to_assign)):
             fashionista_name = raw_input("Enter fashionista name to assign image to -  "+ annotator_to_assign)
-            if (fashionista_name in all_fashionistalist):
+            if (fashionista_name in ALL_fashionistalist):
                 pass
             else:
                 fashionista_name = raw_input("Enter correct fashionista name to assign image to  -  "+ annotator_to_assign)
@@ -269,12 +261,33 @@ def main():
             if(find_annotator(annotator_to_assign)):
                 fashionista_name = raw_input("Enter fashionista name to assign image  to - "+ annotator_to_assign)
 
-        #fashionista_name = raw_input("Enter fashionista name to assign image   "+ annotator_to_assign)
-
+        
         assign_count = raw_input("Enter how many data do you want to assign the annotator - "+ annotator_to_assign)
+	
+	
+
+	allInstagramUserCursor = annotation_app.config['INSTAGRAM_ALL_USER_ID_COLLECTION'].find()
+	for instaUser in allInstagramUserCursor:
+	    totalImageUser = 0
+            instaUserName = instaUser['username']
+            liketkitCursor = liketkitCollection.find({'username':instaUserName})
+            if(liketkitCursor.count()>0):
+                totalImageUser = liketkitCursor.count()
+                #print 'LTKIT > USER: {}  TOTAL IMAGE:   {} '.format(instaUserName,totalImageUser)
+                #6. Save each users image list in a json file for faster access
+                save_imageid_list_in_json(instaUserName,liketkitCursor)
+               
+            else:
+                swedishCursor = swedishCollection.find({'username':instaUserName})
+                totalImageUser = swedishCursor.count()
+                #6. Save each users image list in a json file for faster access
+                save_imageid_list_in_json(instaUserName,swedishCursor)
+		#print 'SWEDISH > USER: {}  TOTAL IMAGE: {} '.format(instaUserName,totalImageUser)
+               
+
         #read the created json file and assign image to annottaor
         cwd = os.getcwd()
-        filename = os.path.join(str(cwd)+"/annotation_webapp/static/appdata","all_fashionistauser_imageidlist_data.json")
+        filename = os.path.join(str(cwd)+"/static/appdata","all_fashionistauser_imageidlist_data.json")
         json_data = return_json_data(filename)
 
         username_imageset_dict={}
@@ -304,12 +317,12 @@ def main():
 
             for item in annotator_image_assign_collection_cursor:
                 imageList =  item.get('imageList')
-                print imageList
+                #print imageList
                 for data in imageList:
                     if(fashionista_name in data.values()):
-                        print data
+                        #print data
                         current_fashionista_list.append(data)
-            print len(current_fashionista_list)
+            #print len(current_fashionista_list)
             annotated_list=[]
             non_annotated_list=[]
             for each_data in current_fashionista_list:

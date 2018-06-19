@@ -52,3 +52,5 @@ COMMON_COUNT = 5
 SETTINGS_COLLECTION = DATABASE.settings
 
 DEBUG = True
+ALL_FASHIONISTA_LIST = ['cocorocha', 'blaireadiebee', 'hellofashionblog','hapatime', 'lolariostyle', 'cmcoving', 'kaitlynn_carter', 'emmahill', 'kathleen_barnes', 'doina', 'champagneandchanel', 'shortstoriesandskirts', 'lyndiinthecity', 'cellajaneblog', 'jessi_afshin', 'hauteofftherack', 'apinchoflovely', 'holliewdwrd', 'stephsterjovski', 'laurenkaysims', 'samanthabelbel', 'littleblondebook', 'thehouseofsequins', 'oliviarink','themilleraffect','joellefriend','jordanunderwood','kenzasmg','katiesbliss','jaimeshrayber','daphnemodeandthecity','ruerodier','thestylebungalow','babiolesdezoe','sorayabakhtiar','jessannkirby','n_g_le','chicflavours','hellovalentine','the_beauty_issue','themoptop','karazwaanstra','jdfashionfreak','interiordesignerella', 'thedoubletakegirls','jessicawhitaker','polishedavenue','modern.mrs']
+
