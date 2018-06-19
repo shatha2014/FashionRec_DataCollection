@@ -64,12 +64,14 @@
     <div class = "container-fluid" style="background-color: #e3f2fd;"><!-- Container for image, words and piechart view -->
       <div class = "row " style="background-color:#f5fcff; border-radius:15px;  margin-top:10px">
         <div class="col-md-4 " style="background-color:lavender;border: 1px solid blue;width:420px;height:400px;"><!-- column1 for image-->
-              {% set binary_image_base64 = imagebinarydata %}
-              {% set image_type = 'data:image/jpg;base64,' %}
-              {% set final_image = image_type + binary_image_base64 %}
-
-            <img src={{final_image}} style="width:380px;height:380px">
-
+              {% if imagebinarydata %}
+                {% set binary_image_base64 = imagebinarydata %}
+                {% set image_type = 'data:image/jpg;base64,' %}
+                {% set final_image = image_type + binary_image_base64 %}
+		<img src={{final_image}} style="width:380px;height:380px">
+	{% else %}
+	<img src="/static/appdata/default-placeholder.png" style="width:380px;height:380px" >
+	{% endif %}
         </div><!-- End column1 for image-->
 
 
