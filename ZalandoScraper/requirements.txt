@@ -1,6 +1,4 @@
 requests==2.13.0
 beautifulsoup4
 pymongo
-matplotlib
-numpy
-pandas
+
