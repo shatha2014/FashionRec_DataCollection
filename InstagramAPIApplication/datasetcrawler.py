@@ -26,7 +26,7 @@ def index():
             values = {
             'client_id':'329baa060a044ea58e966a10e30f5473',
             'client_secret':'30c24436db944af89e953549bb8de647',
-            'redirect_uri':'http://[2001:6b0:1:1041:7ced:d1f2:a0d5:45b3]:5000/',
+            'redirect_uri':REDIRECT_URI,
             'code':code,
             'grant_type':'authorization_code'
             }
@@ -167,7 +167,7 @@ def logininstagram():
     if request.method == 'GET':
         instagram_client_id = '329baa060a044ea58e966a10e30f5473'
         instagram_client_secret = '30c24436db944af89e953549bb8de647'
-        instagram_redirect_url = 'http://[2001:6b0:1:1041:7ced:d1f2:a0d5:45b3]:5000/'
+        instagram_redirect_url = REDIRECT_URI
         login_url = 'https://api.instagram.com/oauth/authorize/?client_id=' + instagram_client_id + '&redirect_uri=' +instagram_redirect_url + '&response_type=code&scope=basic'
 	print 'redirecting to ->   '+login_url
 	
@@ -206,5 +206,5 @@ def description():
 
 if __name__== "__main__":
 	app.secret_key = "123"
-	app.run(host = '0.0.0.0')
+	app.run(host = '130.237.20.58')
 
