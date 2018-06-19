@@ -1029,17 +1029,18 @@ def annotatorAssignedIdCollectionProcessFunctionForBaseBinarydataAndAnnotatedInf
             id_annotated_info_dict[imageid]["annotated"] = each_data["imageinfo"]["annotated"]
             #url,imagebinary = query_db_for_display_url(imageid, None)
             #id_annotated_info_dict[imageid]["url"] = url
-            imagebinary = imagebase64binarycollection.find({"_id":imageid})
-            print str(imagebinary.count())+ "--------"+str(imageid)
-            if(imagebinary.count()>0):
-                for item in imagebinary:
-                    imagebinary = item.get("base64binary")
+	    imagebinary = getbinarydataforthisimage(imageid)
+            #imagebinary = imagebase64binarycollection.find({"_id":imageid})
+            #print str(imagebinary.count())+ "--------"+str(imageid)
+            #if(imagebinary.count()>0):
+                #for item in imagebinary:
+                    #imagebinary = item.get("base64binary")
                     #imgdata = base64.b64decode(imagebinary)
                     #im = Image.open(io.BytesIO(imgdata))
                     #width, height = im.size
                     #print width, height
-                    id_annotated_info_dict[imageid]["imagebinary"] = imagebinary
-
+                    #id_annotated_info_dict[imageid]["imagebinary"] = imagebinary
+	    id_annotated_info_dict[imageid]["imagebinary"] = imagebinary
 	    #Flag check localisation
 	    localisationdata = localiseddata.find({"annotator_name": annotatorusername, "insta_username":fashionistausername,"image_id":imageid})
 	    if (localisationdata.count() > 0):
@@ -1432,6 +1433,15 @@ def getbinarydataforthisimage(imageid):
     if (imagebinary.count() > 0):
         for item in imagebinary:
             imagebinaryData = item.get("base64binary")
+    else:
+	liketkit = liketkitCollection.find({"id": imageid})
+        if (liketkit.count() > 0):
+            for i in liketkit:
+		path = i['imagepath']
+	with open(path, "rb") as image_file:
+            encoded_string_pic = base64.b64encode(image_file.read())
+	imagebase64binarycollection.insert({"_id": imageid, "base64binary": encoded_string_pic})
+      	imagebinaryData = encoded_string_pic
 
     return imagebinaryData
 #### END function to get imagebinaryfrom database given a image id
