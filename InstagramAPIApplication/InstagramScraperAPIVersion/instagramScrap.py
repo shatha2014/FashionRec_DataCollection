@@ -10,8 +10,10 @@ import sys
 import logging.config
 from collections import OrderedDict
 import codecs
+from pymongo import MongoClient
 
-
+client = MongoClient('localhost:27017')
+db = client.instagramapidata
 
 class InstagramScraper(object):
 
@@ -33,6 +35,13 @@ class InstagramScraper(object):
         self.login_pass = LOGIN_PASSWORD
         self.logged_in = False
 
+	#access_token from database
+	checkcsr = db.useraccesstokeninfo.find({"username":userName})
+	if(checkcsr):
+	    for item in checkcsr:
+		self.access_token = item.get("accesstoken")
+		print "ACCESS TOKEN "
+		print self.access_token
 
         #if self.login_user and self.login_pass:
             #self.login()
@@ -74,10 +83,10 @@ class InstagramScraper(object):
         for user in userList:
             if user:
                 #url = USER_SEARCH_URL.format(user)
-                user_basic_Data = self.fetch_url(USER_BASIC_INFO)
+                user_basic_Data = self.fetch_url(USER_BASIC_INFO+self.access_token)
                 #print json.dumps(user_basic_Data)
 
-                user_recent_media_Data = self.fetch_url(USER_RECENT_MEDIA_NEW_EP)
+                user_recent_media_Data = self.fetch_url(USER_RECENT_MEDIA_NEW_EP+self.access_token)
                 #print json.dumps(user_recent_media_Data)
 
                 #user_Data = self.fetch_url(url)
@@ -101,8 +110,8 @@ class InstagramScraper(object):
 
             media_download_path = self.make_dst_dir(self.user_id_and_username.get(userId))
             #print media_download_path
-            media_url = RECENT_MEDIA_URL.format(userId)
-           # print media_url
+            media_url = RECENT_MEDIA_URL.format(userId) + self.access_token
+            print media_url
             user_media_url_parse = self.fetch_url(media_url)
             pagination = user_media_url_parse['pagination']
             all_media_data = user_media_url_parse['data']
@@ -203,8 +212,8 @@ class InstagramScraper(object):
                 tag_list_as_list= self.parse_items_return_kommaseparated_list(tag_List)
                 #print username + "  -- "+images_standard_resolution+ "Caption:"+caption_Id + caption_text + "TAGS : "+str(tag_list_as_list)
                 #url to scrap the user list who liked or commented on the media
-                comment_url = COMMENTS_MEDIA.format(media_Id)
-                like_url = LIKE_MEDIA.format(media_Id)
+                comment_url = COMMENTS_MEDIA.format(media_Id) + self.access_token
+                like_url = LIKE_MEDIA.format(media_Id)+self.access_token
                 #comment and like data scrap using each of the user_media_url_parse
                 comment_users,raw_comment_data = self.comment_info_scrap(media_Id, comment_url)
                 ##Like retrive API link no more active
@@ -229,12 +238,13 @@ class InstagramScraper(object):
                 if not os.path.exists(filepath):
                     if not os.path.exists(directory):
                         os.makedirs(directory)
+		with open(filepath, 'wb') as outfile:
+                    json.dump(all_data_dict, codecs.getwriter('utf-8')(outfile), indent=4, sort_keys=True, ensure_ascii=False)
+
 
             else:
                 print " Other media Type" + media_type
-        with open(filepath, 'wb') as outfile:
-            json.dump(all_data_dict, codecs.getwriter('utf-8')(outfile), indent=4, sort_keys=True, ensure_ascii=False)
-
+        
     def index(self,dir):
 
         for root, dirs, files in os.walk(dir, topdown=False):

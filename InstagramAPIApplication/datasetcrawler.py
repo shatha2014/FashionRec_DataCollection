@@ -8,8 +8,11 @@ import requests
 import urllib
 import urllib2
 global accessToken_gl
+from pymongo import MongoClient
 
 app = Flask(__name__)
+client = MongoClient('localhost:27017')
+db = client.instagramapidata
  
 @app.route('/',methods=['GET', 'POST'])
 #@app.route('/index',methods=['GET', 'POST'])
@@ -43,6 +46,14 @@ def index():
 	    if 'access_token' in instagram_data:
 	        print ' ACCESSTOKEN::'+instagram_data['access_token'] + " of USER:: "+instagram_data['user']['username']
 		login_user = instagram_data['user']['username']
+		#db.useraccesstokeninfo.create_index([('username', ASCENDING)], unique=True)
+		access_token = instagram_data['access_token']
+		db.useraccesstokeninfo.insert({"username":login_user,"accesstoken":access_token})
+		checkcsr = db.useraccesstokeninfo.find({"username":login_user})
+		if (checkcsr.count()>0):
+		    pass
+		else:
+		    db.useraccesstokeninfo.insert({"username":login_user,"accesstoken":access_token})
 		
 		return redirect(url_for('login',current_user = login_user))
 
