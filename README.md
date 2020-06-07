@@ -22,3 +22,17 @@ See each module README.md for detail.
 License
 -------
 All rights reserved to Fashion Recommendation Team , KTH.
+
+Citation: 
+### TALS: A Framework for Text Analysis, Fine-Grained Annotation, Localisation and Semantic Segmentation
+```
+@inproceedings{jaradat2019tals,
+  title={TALS: A Framework for Text Analysis, Fine-Grained Annotation, Localisation and Semantic Segmentation},
+  author={Jaradat, Shatha and Dokoohaki, Nima and Wara, Ummul and Goswami, Mallu and Hammar, Kim and Matskin, Mihhail},
+  booktitle={2019 IEEE 43rd Annual Computer Software and Applications Conference (COMPSAC)},
+  volume={2},
+  pages={201--206},
+  year={2019},
+  organization={IEEE}
+}
+```
